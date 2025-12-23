@@ -7,9 +7,10 @@ on:
       - develop
 
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - run: chmod +x ./gradlew
-      - run: ./gradlew assembleDebug
+      - run: ./gradlew testDebugUnitTest
+
