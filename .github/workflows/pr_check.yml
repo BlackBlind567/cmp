@@ -1,0 +1,14 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: chmod +x ./gradlew
+      - run: ./gradlew testDebugUnitTest
