@@ -15,4 +15,21 @@ class AuthRepositoryImpl(
     ): NetworkResult<LoginResponse> {
         return blindApiCall { api.login(request) }
     }
+
+    override suspend fun sendOtp(
+        mobile: String
+    ): NetworkResult<String> {
+        return blindApiCall {
+            api.sendOtp(mobile)
+        }
+    }
+
+    override suspend fun verifyOtp(
+        mobile: String,
+        otp: String
+    ): NetworkResult<LoginResponse> {
+        return blindApiCall {
+            api.verifyOtp(mobile, otp)
+        }
+    }
 }

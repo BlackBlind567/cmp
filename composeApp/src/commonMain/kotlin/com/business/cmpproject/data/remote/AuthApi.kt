@@ -18,4 +18,33 @@ class AuthApi(
             setBody(request)
         }
     }
+
+
+    suspend fun sendOtp(
+        mobile: String
+    ): HttpResponse {
+        return client.post("/api/send/mobile/otp") {
+            contentType(ContentType.Application.Json)
+            setBody(
+                mapOf(
+                    "mobile" to mobile
+                )
+            )
+        }
+    }
+
+    suspend fun verifyOtp(
+        mobile: String,
+        otp: String
+    ): HttpResponse {
+        return client.post("/api/verified/mobile/otp") {
+            contentType(ContentType.Application.Json)
+            setBody(
+                mapOf(
+                    "mobile" to mobile,
+                    "otp" to otp
+                )
+            )
+        }
+    }
 }

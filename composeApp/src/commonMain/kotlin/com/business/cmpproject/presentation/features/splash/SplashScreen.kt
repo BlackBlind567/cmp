@@ -15,11 +15,11 @@ class SplashScreen : Screen {
         val navigator = LocalNavigator.current!!
 
         SplashContent(viewModel) { isLoggedIn ->
-            if (isLoggedIn) {
-                navigator.replace(DashboardScreen())
-            } else {
+//            if (isLoggedIn) {
+//                navigator.replace(DashboardScreen())
+//            } else {
                 navigator.replace(LoginScreen())
-            }
+//            }
         }
     }
 }

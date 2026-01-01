@@ -10,6 +10,7 @@ import com.business.cmpproject.domain.repository.AuthRepository
 import com.business.cmpproject.domain.repository.AuthRepositoryImpl
 import com.business.cmpproject.presentation.features.dashboard.DashboardScreenModel
 import com.business.cmpproject.presentation.features.login.LoginScreenModel
+import com.business.cmpproject.presentation.features.otp.OtpScreenModel
 import com.business.cmpproject.presentation.features.splash.SplashScreenModel
 import org.koin.dsl.module
 
@@ -40,4 +41,5 @@ val coreModule = module {
     factory { SplashScreenModel(get()) }
     factory { LoginScreenModel(get(), get(), get()) }
     factory { DashboardScreenModel() }
+    factory { OtpScreenModel(get(), get(),) }
 }

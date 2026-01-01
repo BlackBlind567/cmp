@@ -52,8 +52,9 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation("cafe.adriel.voyager:voyager-navigator:1.1.0-beta03")
-            implementation("cafe.adriel.voyager:voyager-koin:1.1.0-beta03")
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.koin)
+            implementation(compose.materialIconsExtended)
 
             // ---------- Coroutines ----------
             implementation(libs.coroutines.core)
