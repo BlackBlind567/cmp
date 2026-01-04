@@ -10,9 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.business.cmpproject.core.state.UiState
 import com.business.cmpproject.presentation.components.AppScaffold
 import com.business.cmpproject.presentation.components.FullScreenError
+import com.business.cmpproject.presentation.features.invoice.InvoiceListScreen
 
 class HomeScreen : Screen {
 
@@ -20,7 +23,9 @@ class HomeScreen : Screen {
     override fun Content() {
         val viewModel = getScreenModel<HomeScreenModel>()
         val uiState by viewModel.state.collectAsState()
-
+        val navigator = LocalNavigator.currentOrThrow
+// Find the parent navigator if the current one is a TabNavigator
+        val rootNavigator = navigator.parent ?: navigator
         AppScaffold(events = viewModel.events) {
             // Use a 'when' block to safely handle states
             when (val state = uiState) {
@@ -34,9 +39,16 @@ class HomeScreen : Screen {
                     HomeScreenContent(
                         state = state.data,
                         onViewAllTickets = { /* ... */ },
-                        onTicketClick = { /* ... */ },
-                        onViewAllInvoices = { /* ... */ },
-                        onInvoiceClick = { /* ... */ }
+                        onTicketClick = {  },
+                        onViewAllInvoices = {
+                            // Use rootNavigator so it pushes a Screen, not a Tab
+                            rootNavigator.push(InvoiceListScreen(
+                                invoices = state.data.recentInvoices!!
+                            ))
+                        },
+                        onInvoiceClick = { /* ... */ },
+                        customerName = "Shantanu",
+                        companyName = "Atoms Group"
                     )
                 }
                 is UiState.Error -> {

@@ -7,6 +7,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import com.business.cmpproject.presentation.features.dashboard.DashboardScreen
 import com.business.cmpproject.presentation.features.home.HomeScreen
 import com.business.cmpproject.presentation.features.login.LoginScreen
+import com.business.cmpproject.presentation.features.plans.CustomerPlansScreen
 
 class SplashScreen : Screen {
 

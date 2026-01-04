@@ -8,7 +8,7 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-inline suspend fun <reified T> blindApiCall(
+suspend inline fun <reified T> blindApiCall(
     crossinline apiCall: suspend () -> HttpResponse
 ): NetworkResult<T> {
 

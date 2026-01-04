@@ -5,22 +5,30 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.ConfirmationNumber
+import androidx.compose.material.icons.filled.Lan
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.business.cmpproject.data.model.response.HomeResponse
 
 @Composable
-fun DashboardStatsGrid(state: HomeResponse) {
-    Column {
+fun DashboardStatsGrid(state: HomeResponse, isDark: Boolean) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        // High Highlight Card for Due Amount
+        StatCard(
+            label = "Total Amount Due",
+            value = "₹${state.totalDueAmount}",
+            icon = Icons.Default.AccountBalanceWallet,
+            isPrimary = true,
+            isDark = isDark
+        )
+
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StatCard("Active Plans", state.totalActivePlans.toString(),  modifier = Modifier.weight(1f))
-            StatCard("Open Tickets", state.openTickets.toString(),  modifier = Modifier.weight(1f))
-        }
-        Spacer(Modifier.height(12.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            StatCard("Total Due", "₹${state.totalDueAmount}",  modifier = Modifier.weight(1f))
-            StatCard("This Month", "₹${state.thisMonthInvoiceAmount}",  modifier = Modifier.weight(1f))
+            SmallStatCard("Active Plans", state.totalActivePlans.toString(), Icons.Default.Lan, Modifier.weight(1f), isDark)
+            SmallStatCard("Open Tickets", state.openTickets.toString(), Icons.Default.ConfirmationNumber, Modifier.weight(1f), isDark)
         }
     }
 }
