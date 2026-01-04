@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.business.cmpproject.presentation.features.dashboard.DashboardScreen
+import com.business.cmpproject.presentation.features.home.HomeScreen
 import com.business.cmpproject.presentation.features.login.LoginScreen
 
 class SplashScreen : Screen {
@@ -15,11 +16,11 @@ class SplashScreen : Screen {
         val navigator = LocalNavigator.current!!
 
         SplashContent(viewModel) { isLoggedIn ->
-//            if (isLoggedIn) {
-//                navigator.replace(DashboardScreen())
-//            } else {
+            if (isLoggedIn) {
+                navigator.replace(DashboardScreen())
+            } else {
                 navigator.replace(LoginScreen())
-//            }
+            }
         }
     }
 }

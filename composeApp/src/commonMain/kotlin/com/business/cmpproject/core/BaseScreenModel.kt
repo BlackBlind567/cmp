@@ -9,12 +9,18 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 abstract class BaseScreenModel : ScreenModel {
 
+    protected val screenModelScope = CoroutineScope(
+        SupervisorJob() + Dispatchers.Main.immediate
+    )
+
     protected val _events = MutableSharedFlow<UiEvent>()
     val events = _events.asSharedFlow()
 
-    protected fun sendEvent(event: UiEvent) {
-        screenModelScope.launch {
-            _events.emit(event)
-        }
+    protected suspend fun sendEvent(event: UiEvent) {
+        _events.emit(event)
+    }
+
+    override fun onDispose() {
+        screenModelScope.cancel()
     }
 }

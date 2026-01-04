@@ -56,6 +56,7 @@ kotlin {
             implementation(libs.voyager.koin)
             implementation(compose.materialIconsExtended)
 
+
             // ---------- Coroutines ----------
             implementation(libs.coroutines.core)
 
@@ -65,7 +66,7 @@ kotlin {
             implementation(libs.ktor.serialization)
             implementation("io.ktor:ktor-client-auth:3.3.3")
             implementation("io.ktor:ktor-client-logging:3.3.3")
-
+            implementation("cafe.adriel.voyager:voyager-tab-navigator:1.0.1")
 
 
             // ---------- Serialization ----------

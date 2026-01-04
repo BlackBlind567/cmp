@@ -18,6 +18,7 @@ serialization = "1.9.0"
 koin = "4.1.1"
 compose-material = "1.7.8"
 voyagerKoin = "1.1.0-beta03"
+voyagerTabNavigation = "1.0.0"
 
 
 
@@ -56,6 +57,7 @@ compose-material-icons-core = { module = "androidx.compose.material:material-ico
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose-material" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyagerKoin" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyagerKoin" }
+voyager-tab-navigation = { module = "cafe.adriel.voyager:voyager-tab-navigation", version.ref = "voyagerTabNavigation" }
 
 
 
