@@ -14,6 +14,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 
 import com.business.cmpproject.presentation.features.home.HomeScreen
+import com.business.cmpproject.presentation.features.plans.CustomerPlansScreen
 
 
 object HomeTab : Tab {
@@ -35,11 +36,13 @@ object InvoicesTab : Tab {
     override val options: TabOptions
         @Composable get() {
             val icon = rememberVectorPainter(Icons.Default.Receipt)
-            return remember { TabOptions(index = 1u, title = "Bills", icon = icon) }
+            return remember { TabOptions(index = 1u, title = "Pricing", icon = icon) }
         }
 
     @Composable
-    override fun Content() { Text("Invoices Screen") }
+    override fun Content() {
+        CustomerPlansScreen().Content()
+    }
 }
 
 // 3. Tickets Tab
