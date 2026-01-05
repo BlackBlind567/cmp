@@ -11,10 +11,10 @@ import com.business.cmpproject.app.initKoin
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        initKoin()
+//        initKoin()
         setContent {
             App()
         }

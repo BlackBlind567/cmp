@@ -44,6 +44,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             //implementation(libs.androidx.lifecycle.viewmodelCompose)
            // implementation(libs.androidx.lifecycle.runtimeCompose)
+
             // ---------- Compose ----------
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -51,6 +52,9 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.koin)
+            implementation(compose.materialIconsExtended)
 
             // ---------- Coroutines ----------
             implementation(libs.coroutines.core)
@@ -59,6 +63,10 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content)
             implementation(libs.ktor.serialization)
+            implementation("io.ktor:ktor-client-auth:3.3.3")
+            implementation("io.ktor:ktor-client-logging:3.3.3")
+
+
 
             // ---------- Serialization ----------
             implementation(libs.serialization.json)
@@ -67,6 +75,11 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
            // implementation(libs.koin.compose.mp)
+
+            // Local Storage
+//            implementation("com.russhwolf:multiplatform-settings:1.3.0")
+            implementation("com.russhwolf:multiplatform-settings-no-arg:1.3.0")
+
 
 
         }

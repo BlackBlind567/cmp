@@ -1,12 +1,23 @@
 package com.business.cmpproject.app
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import com.business.cmpproject.features.login.LoginScreen
-import com.business.cmpproject.navigation.AppNavigator
-import com.business.cmpproject.navigation.Route
+import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.navigator.Navigator
+import com.business.cmpproject.presentation.features.splash.SplashScreen
+import com.business.cmpproject.presentation.theme.AppTheme
 
 
 @Composable
 fun App() {
-    //LoginScreen()
-    AppNavigator(startRoute = Route.Login)
+    AppTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Navigator(SplashScreen())
+        }
+    }
 }
