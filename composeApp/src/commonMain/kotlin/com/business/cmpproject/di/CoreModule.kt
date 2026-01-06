@@ -60,6 +60,7 @@ val coreModule = module {
     single<DashboardRepository> { DashboardRepositoryImpl(get()) }
     single<TicketDetailsRepository> { TicketDetailsRepositoryImpl(get()) }
     single<TicketRepository> { TicketRepositoryImpl(get()) }
+    single<PlanRepository> { PlanRepositoryImpl(get()) }
 
     // ---- ViewModels ----
     factory { SplashScreenModel(get()) }
