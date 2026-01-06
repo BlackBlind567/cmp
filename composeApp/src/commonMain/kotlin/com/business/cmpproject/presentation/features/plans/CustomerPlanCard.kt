@@ -52,7 +52,8 @@ import com.business.cmpproject.presentation.theme.PinkPrimary
 @Composable
 fun CustomerPlanCard(
     plan: PlanResponse,
-    onManageClick: (PlanResponse) -> Unit
+    onManageClick: (PlanResponse) -> Unit,
+    onCardClick: () -> Unit
 ) {
     val isDark = isSystemInDarkTheme()
 
@@ -63,7 +64,9 @@ fun CustomerPlanCard(
     val secondaryText = if (isDark) DarkTextSecondary else LightTextSecondary
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().clickable{
+            onCardClick()
+        },
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = surfaceColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
@@ -78,11 +81,11 @@ fun CustomerPlanCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = plan.item ?: "Internet Plan",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         color = primaryText,
                         fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        maxLines = 4,
+//                        overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = "Circuit ID: ${plan.circuitId ?: "N/A"}",

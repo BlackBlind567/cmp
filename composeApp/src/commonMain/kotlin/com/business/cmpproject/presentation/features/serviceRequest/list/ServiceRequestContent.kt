@@ -1,4 +1,4 @@
-package com.business.cmpproject.presentation.features.serviceRequest
+package com.business.cmpproject.presentation.features.serviceRequest.list
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,9 +28,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.business.cmpproject.core.state.UiState
-import com.business.cmpproject.core.state.UiStatePagination
 import com.business.cmpproject.data.model.response.ServiceRequestItem
-import com.business.cmpproject.presentation.components.StandardTopAppBar
 import com.business.cmpproject.presentation.theme.CreamBackground
 import com.business.cmpproject.presentation.theme.DarkBackground
 import com.business.cmpproject.presentation.theme.GreenPrimary

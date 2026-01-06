@@ -5,6 +5,7 @@ import com.business.cmpproject.data.model.response.ServiceRequestPaginationRespo
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.parameters
 
@@ -15,6 +16,12 @@ class ServiceRequestApi(private val client: HttpClient) {
             url {
                 parameters.append("page", page.toString())
             }
+        }
+    }
+
+    suspend fun submitRequest(params: MutableMap<String, String>): HttpResponse {
+        return client.post("/api/customer/requests/store"){
+            setBody(params)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.business.cmpproject.presentation.features.serviceRequest
+package com.business.cmpproject.presentation.features.serviceRequest.list
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

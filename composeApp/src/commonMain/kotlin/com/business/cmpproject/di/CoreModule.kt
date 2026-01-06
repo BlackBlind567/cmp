@@ -28,7 +28,8 @@ import com.business.cmpproject.presentation.features.home.HomeScreenModel
 import com.business.cmpproject.presentation.features.login.LoginScreenModel
 import com.business.cmpproject.presentation.features.otp.OtpScreenModel
 import com.business.cmpproject.presentation.features.plans.CustomerPlansScreenModel
-import com.business.cmpproject.presentation.features.serviceRequest.ServiceRequestScreenModel
+import com.business.cmpproject.presentation.features.serviceRequest.add.RaiseServiceRequestScreenModel
+import com.business.cmpproject.presentation.features.serviceRequest.list.ServiceRequestScreenModel
 import com.business.cmpproject.presentation.features.splash.SplashScreenModel
 import com.business.cmpproject.presentation.features.statusTracking.PlanTrackingScreenModel
 import com.business.cmpproject.presentation.features.ticket.TicketScreenModel
@@ -75,6 +76,14 @@ val coreModule = module {
     factory { PlanTrackingScreenModel(get()) }
     factory { ProfileScreenModel(get()) }
     factory { ServiceRequestScreenModel(get()) }
+// In your Koin Module
+    factory { (locId: String, locName: String) ->
+        RaiseServiceRequestScreenModel(
+            repo = get(),
+            initialLocationId = locId,
+            initialLocationName = locName
+        )
+    }
     factory { LoginScreenModel(get(), get(), get()) }
     factory { (ticketId: Int) -> TicketHistoryScreenModel(get(), ticketId) }
     factory { OtpScreenModel(get(), get(),) }

@@ -35,7 +35,7 @@ class OtpVerifyScreen(
                 },
                 viewModel = viewModel,
                 onOtpVerifySuccess = {
-                   // navigator.replace(DashboardScreen())
+                    navigator.replace(DashboardScreen())
                   //  navigator.push(TicketHistoryScreen())
                 },
             )

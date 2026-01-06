@@ -1,4 +1,4 @@
-package com.business.cmpproject.presentation.features.serviceRequest
+package com.business.cmpproject.presentation.features.serviceRequest.list
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -55,9 +55,9 @@ fun ServiceRequestCard(item: ServiceRequestItem, isDark: Boolean) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                StatusChip(status = item.reportType.replace("_", " "))
+                StatusChip(status = item.reportType!!.replace("_", " "))
                 Text(
-                    text = item.createdAt.split(" ")[0], // Only Date
+                    text = item.createdAt!!.split(" ")[0], // Only Date
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.Gray
                 )
@@ -67,7 +67,7 @@ fun ServiceRequestCard(item: ServiceRequestItem, isDark: Boolean) {
 
             // Location & Bandwidth
             Text(
-                text = item.locationName,
+                text = item.locationName!!,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Black,
                 color = textColor
@@ -92,17 +92,17 @@ fun ServiceRequestCard(item: ServiceRequestItem, isDark: Boolean) {
 
             // Infrastructure Details
             Row(modifier = Modifier.fillMaxWidth()) {
-                InfoBlock("BTS Code", item.btsCode, Modifier.weight(1f))
-                InfoBlock("MUX ID", item.muxId, Modifier.weight(1f))
+                InfoBlock("BTS Code", item.btsCode?:"", Modifier.weight(1f))
+                InfoBlock("MUX ID", item.muxId?:"", Modifier.weight(1f))
             }
 
-            if (!item.address.isBlank()) {
+            if (!item.address!!.isBlank()) {
                 Spacer(Modifier.height(12.dp))
                 Row {
                     Icon(Icons.Default.LocationOn, null, modifier = Modifier.size(14.dp), tint = Color.Gray)
                     Spacer(Modifier.width(4.dp))
                     Text(
-                        text = item.address,
+                        text = "item.address",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Gray,
                         maxLines = 2,
