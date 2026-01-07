@@ -1,5 +1,6 @@
 package com.business.cmpproject.presentation.features.home
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -26,6 +27,7 @@ class HomeScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
 // Find the parent navigator if the current one is a TabNavigator
         val rootNavigator = navigator.parent ?: navigator
+        val isDark = isSystemInDarkTheme()
         AppScaffold(events = viewModel.events) {
             // Use a 'when' block to safely handle states
             when (val state = uiState) {
@@ -37,7 +39,8 @@ class HomeScreen : Screen {
                 }
                 is UiState.Success -> {
                     HomeScreenContent(
-                        state = state.data,
+                        data = state.data,
+                        isDark = isDark,
                         onViewAllTickets = { /* ... */ },
                         onTicketClick = {  },
                         onViewAllInvoices = {
@@ -47,8 +50,7 @@ class HomeScreen : Screen {
                             ))
                         },
                         onInvoiceClick = { /* ... */ },
-                        customerName = "Shantanu",
-                        companyName = "Atoms Group"
+
                     )
                 }
                 is UiState.Error -> {

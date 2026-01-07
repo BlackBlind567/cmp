@@ -32,7 +32,7 @@ class HomeScreenModel (
 
                 is NetworkResult.Success -> {
                     _state.value =
-                        UiState.Success(result.data.toUiModel())
+                        UiState.Success(result.data)
                 }
 
                 is NetworkResult.Failure -> {
@@ -54,50 +54,50 @@ class HomeScreenModel (
         }
     }
 
-    fun HomeResponse.toUiModel(): HomeResponse =
-        HomeResponse(
-            totalActivePlans = totalActivePlans,
-            openTickets = openTickets,
-            pendingTickets = pendingTickets,
-            closedTickets = closedTickets,
-            totalDueAmount = totalDueAmount,
-            thisMonthInvoiceAmount = thisMonthInvoiceAmount,
-            recentTickets = recentTickets!!.map {
-                Ticket(
-                    id = it.id,
-                    ticketId = it.ticketId,
-                    category = it.category,
-                    status = it.status,
-                    createdAt = it.createdAt,
-                    updatedAt = it.updatedAt,
-
-                )
-            },
-            recentInvoices = recentInvoices!!.map {
-                Invoice(
-                    id = it.id,
-                    invoiceNo = it.invoiceNo,
-                    invoiceDate = it.invoiceDate,
-                    netAmount = it.netAmount,
-                    paymentStatus = it.paymentStatus,
-                    pdfFile = it.pdfFile,
-                    recurring = it.recurring,
-                    status = it.status,
-                    type = it.type,
-                    cgst = it.cgst,
-                    sgst = it.sgst,
-                    igst = it.igst,
-                    gstSlab = it.gstSlab,
-                    roundOfValue = it.roundOfValue,
-                    balanceAmount = it.balanceAmount,
-                    countMail = it.countMail,
-                    discount = it.discount,
-                    grossAmount = it.grossAmount,
-                    grossAmountBeforeDiscount = it.grossAmountBeforeDiscount,
-                    paidAmount = it.paidAmount,
-                    totalDiscountAmount = it.totalDiscountAmount,
-                    walletDebit = it.walletDebit
-                )
-            }
-        )
+//    fun HomeResponse.toUiModel(): HomeResponse =
+//        HomeResponse(
+//            totalActivePlans = totalActivePlans,
+//            openTickets = openTickets,
+//            pendingTickets = pendingTickets,
+//            closedTickets = closedTickets,
+//            totalDueAmount = totalDueAmount,
+//            thisMonthInvoiceAmount = thisMonthInvoiceAmount,
+//            recentTickets = recentTickets!!.map {
+//                Ticket(
+//                    id = it.id,
+//                    ticketId = it.ticketId,
+//                    category = it.category,
+//                    status = it.status,
+//                    createdAt = it.createdAt,
+//                    updatedAt = it.updatedAt,
+//
+//                )
+//            },
+//            recentInvoices = recentInvoices!!.map {
+//                Invoice(
+//                    id = it.id,
+//                    invoiceNo = it.invoiceNo,
+//                    invoiceDate = it.invoiceDate,
+//                    netAmount = it.netAmount,
+//                    paymentStatus = it.paymentStatus,
+//                    pdfFile = it.pdfFile,
+//                    recurring = it.recurring,
+//                    status = it.status,
+//                    type = it.type,
+//                    cgst = it.cgst,
+//                    sgst = it.sgst,
+//                    igst = it.igst,
+//                    gstSlab = it.gstSlab,
+//                    roundOfValue = it.roundOfValue,
+//                    balanceAmount = it.balanceAmount,
+//                    countMail = it.countMail,
+//                    discount = it.discount,
+//                    grossAmount = it.grossAmount,
+//                    grossAmountBeforeDiscount = it.grossAmountBeforeDiscount,
+//                    paidAmount = it.paidAmount,
+//                    totalDiscountAmount = it.totalDiscountAmount,
+//                    walletDebit = it.walletDebit
+//                )
+//            }
+//        )
 }

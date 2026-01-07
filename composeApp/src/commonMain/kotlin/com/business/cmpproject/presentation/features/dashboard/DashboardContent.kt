@@ -34,6 +34,7 @@ fun DashboardContent() {
         // Custom logic for Subtitles or Menus per tab
         val topBarSubtitle = when (currentTab) {
             is PlansTab -> "Manage Subscriptions"
+            is ServicesTab -> "Manage new link requests"
 //            is InvoicesTab -> "Billing History"
             else -> null
         }

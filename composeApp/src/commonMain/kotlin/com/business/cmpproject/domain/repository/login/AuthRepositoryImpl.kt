@@ -1,4 +1,4 @@
-package com.business.cmpproject.domain.repository
+package com.business.cmpproject.domain.repository.login
 
 import com.business.cmpproject.core.network.NetworkResult
 import com.business.cmpproject.core.network.blindApiCall

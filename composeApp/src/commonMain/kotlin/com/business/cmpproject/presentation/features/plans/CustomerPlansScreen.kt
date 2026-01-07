@@ -17,6 +17,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.business.cmpproject.presentation.components.AppScaffold
 import com.business.cmpproject.presentation.components.StandardTopAppBar
+import com.business.cmpproject.presentation.features.serviceRequest.add.RaiseServiceRequestScreen
 import com.business.cmpproject.presentation.features.statusTracking.PlanTrackingScreen
 
 class CustomerPlansScreen : Screen {
@@ -40,7 +41,17 @@ class CustomerPlansScreen : Screen {
                 onRetry = { screenModel.loadPlans() },
                 onUpdatePlan = { plan, qty, reason, isTerminate ->
                     screenModel.processPlanUpdate(plan, qty, reason, isTerminate)
-                })
+                },
+                onRaiseRequest = { locId, locName ->
+                    // Yahan hum naye screen par bhej rahe hain data ke sath
+                    rootNavigator.push(
+                        RaiseServiceRequestScreen(
+                            locationId = locId,
+                            locationName = locName
+                        )
+                    )
+                }
+            )
             }
         }
     }

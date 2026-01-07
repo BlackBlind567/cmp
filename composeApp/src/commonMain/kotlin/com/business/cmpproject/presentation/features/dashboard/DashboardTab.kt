@@ -9,13 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.Text
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.business.cmpproject.presentation.features.profile.ProfileScreen
 
 import com.business.cmpproject.presentation.features.home.HomeScreen
 import com.business.cmpproject.presentation.features.plans.CustomerPlansScreen
+import com.business.cmpproject.presentation.features.serviceRequest.list.ServiceRequestScreen
 import com.business.cmpproject.presentation.features.ticket.TicketHistoryList
 
 
@@ -70,7 +70,9 @@ object ServicesTab : Tab {
         }
 
     @Composable
-    override fun Content() { Text("Active Plans Screen") }
+    override fun Content() {
+        ServiceRequestScreen().Content()
+    }
 }
 
 // 5. Profile Tab

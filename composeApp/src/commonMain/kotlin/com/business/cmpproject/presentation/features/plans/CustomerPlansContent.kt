@@ -41,7 +41,7 @@ fun CustomerPlansContent(
     isProcessing: Boolean,
     onRetry: () -> Unit,
     onUpdatePlan: (PlanResponse, Int?, String, Boolean) -> Unit,
-//    onTrackScreen: () -> Unit,
+    onRaiseRequest: (String, String) -> Unit // Naya callback location pass karne ke liye
 ) {
     val isDark = isSystemInDarkTheme()
     var selectedPlanForManage by remember { mutableStateOf<PlanResponse?>(null) }
@@ -54,60 +54,69 @@ fun CustomerPlansContent(
                 }
             }
 
-                is UiState.Error -> {
-                    FullScreenError(
-                        message = uiState.message ?: "Failed to load plans",
-                        onRetry = onRetry
-                    )
-                }
-
-                is UiState.Success -> {
-                    val plans = uiState.data
-                    if (plans.isEmpty()) {
-                        FullScreenError(message = "No active plans found", onRetry = onRetry)
-                    } else {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            items(plans, key = { it.id ?: 0 }) { plan ->
-                                CustomerPlanCard(
-                                    plan = plan,
-                                    onManageClick = { selectedPlanForManage = it }
-                                )
-                            }
-                        }
-                    }
-                }
-                else -> Unit
-            }
-
-            // --- Bottom Sheet Logic ---
-            selectedPlanForManage?.let { plan ->
-                ManagePlanSheet(
-                    plan = plan,
-                    isDark = isDark,
-                    onDismiss = { selectedPlanForManage = null },
-                    onConfirm = { newQty, reason, isTerminate ->
-                        onUpdatePlan(plan, newQty, reason, isTerminate)
-                        selectedPlanForManage = null
-                    }
+            is UiState.Error -> {
+                FullScreenError(
+                    message = uiState.message ?: "Failed to load plans",
+                    onRetry = onRetry
                 )
             }
 
-            // --- Premium Processing Overlay ---
-            if (isProcessing) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.4f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = if (isDark) PinkPrimary else GreenPrimary)
+            is UiState.Success -> {
+                val plans = uiState.data
+                if (plans.isEmpty()) {
+                    FullScreenError(message = "No active plans found", onRetry = onRetry)
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(plans, key = { it.id ?: 0 }) { plan ->
+                            // --- Card Click Logic ---
+                            CustomerPlanCard(
+                                plan = plan,
+                                onManageClick = { selectedPlanForManage = it },
+                                // Card ke kisi bhi hisse par click karne par form khulega
+                                onCardClick = {
+                                    onRaiseRequest(
+                                        plan.locationId?.toString() ?: "",
+                                        plan.locationName ?: ""
+                                    )
+                                }
+                            )
+                        }
+                    }
                 }
+            }
+            else -> Unit
+        }
+
+        // Bottom Sheet aur Overlay logic same rahega...
+        // --- Bottom Sheet Logic ---
+        selectedPlanForManage?.let { plan ->
+            ManagePlanSheet(
+                plan = plan,
+                isDark = isDark,
+                onDismiss = { selectedPlanForManage = null },
+                onConfirm = { newQty, reason, isTerminate ->
+                    onUpdatePlan(plan, newQty, reason, isTerminate)
+                    selectedPlanForManage = null
+                }
+            )
+        }
+
+        // --- Premium Processing Overlay ---
+        if (isProcessing) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = if (isDark) PinkPrimary else GreenPrimary)
             }
         }
     }
+}
 
 

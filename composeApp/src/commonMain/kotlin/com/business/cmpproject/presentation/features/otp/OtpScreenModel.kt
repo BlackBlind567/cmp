@@ -1,12 +1,11 @@
 package com.business.cmpproject.presentation.features.otp
 
-import cafe.adriel.voyager.core.model.screenModelScope
 import com.business.cmpproject.core.BaseScreenModel
 import com.business.cmpproject.core.network.NetworkResult
 import com.business.cmpproject.core.state.UiEvent
 import com.business.cmpproject.core.state.UiState
 import com.business.cmpproject.core.storage.LocalStorage
-import com.business.cmpproject.domain.repository.AuthRepository
+import com.business.cmpproject.domain.repository.login.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
