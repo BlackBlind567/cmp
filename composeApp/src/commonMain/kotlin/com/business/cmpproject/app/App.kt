@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import com.business.cmpproject.presentation.features.splash.SplashScreen
+import com.business.cmpproject.presentation.features.support.SupportContent
 import com.business.cmpproject.presentation.theme.AppTheme
 
 
@@ -17,6 +18,7 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+
             Navigator(SplashScreen())
         }
     }
