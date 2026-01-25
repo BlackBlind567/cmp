@@ -1,7 +1,7 @@
 package com.business.cmpproject.presentation.features.login
 
 
-import com.business.cmpproject.core.BaseScreenModel
+import com.business.cmpproject.core.base.BaseScreenModel
 import com.business.cmpproject.core.network.NetworkResult
 import com.business.cmpproject.core.session.SessionManager
 import com.business.cmpproject.core.state.UiEvent.*

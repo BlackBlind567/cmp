@@ -1,6 +1,6 @@
 package com.business.cmpproject.presentation.features.home
 
-import com.business.cmpproject.core.BaseScreenModel
+import com.business.cmpproject.core.base.BaseScreenModel
 import com.business.cmpproject.core.network.NetworkResult
 import com.business.cmpproject.core.state.UiEvent.ShowSnackBar
 import com.business.cmpproject.core.state.UiState

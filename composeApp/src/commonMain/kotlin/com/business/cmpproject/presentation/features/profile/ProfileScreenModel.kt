@@ -1,6 +1,6 @@
 package com.business.cmpproject.presentation.features.profile
 
-import com.business.cmpproject.core.BaseScreenModel
+import com.business.cmpproject.core.base.BaseScreenModel
 import com.business.cmpproject.core.storage.LocalStorage
 import com.business.cmpproject.data.model.response.LoginResponse
 import kotlinx.coroutines.flow.MutableStateFlow

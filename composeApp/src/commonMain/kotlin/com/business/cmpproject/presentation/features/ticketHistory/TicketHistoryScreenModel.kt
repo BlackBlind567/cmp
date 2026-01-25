@@ -1,6 +1,6 @@
 package com.business.cmpproject.presentation.features.ticketHistory
 
-import com.business.cmpproject.core.BaseScreenModel
+import com.business.cmpproject.core.base.BaseScreenModel
 import com.business.cmpproject.core.network.NetworkResult
 import com.business.cmpproject.core.state.UiState
 import com.business.cmpproject.data.model.response.TicketHistoryItem

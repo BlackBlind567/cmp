@@ -1,7 +1,5 @@
 package com.business.cmpproject.presentation.features.support
 
-
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,54 +8,92 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.business.cmpproject.core.state.UiState
+import com.business.cmpproject.core.base.encodeBase64
+import com.business.cmpproject.core.image.rememberImagePicker
 import com.business.cmpproject.data.model.response.PlanResponse
 import com.business.cmpproject.data.model.supportmodel.Category
 import com.business.cmpproject.data.model.supportmodel.SubCategory
+import com.business.cmpproject.presentation.components.AppButton
+import com.business.cmpproject.presentation.components.AppTextField
+import com.business.cmpproject.presentation.components.DropdownSelector
+import com.business.cmpproject.presentation.components.InputType
 
 @Composable
-fun SupportContent(locationResp: List<PlanResponse>) {
+fun SupportContent(
+    locationResp: List<PlanResponse>,
+    onSubmit: (Map<String, Any>) -> Unit = {}
+) {
+    // --- 1. DATA SETUP ---
+    val categories = remember {
+        listOf(
+            Category("1", "Network Connectivity Issues", listOf(
+                SubCategory("1.1", "Link down/No internet", listOf("Choose Location", "Attach RX Power Snap", "Remark")),
+                SubCategory("1.2", "Speed Issues", listOf("Choose Location", "Attach Speedtest Snap", "Remark")),
+                SubCategory("1.3", "Packet Loss/Latency", listOf("Choose Location", "Attach Logs Snap", "Remark")),
+                SubCategory("1.4", "IP issues", listOf("Choose Location", "Write IP", "Remark")),
+                SubCategory("1.5", "Wireless Device Issues", listOf("Choose Location", "Issue Brief")),
+                SubCategory("1.6", "ONU power issues", listOf("Location Name", "Remark")),
+                SubCategory("1.7", "General Hardware Issues", listOf("Location Name", "Remark")),
+                SubCategory("1.8", "Website/URL issues", listOf("Location Name", "Write website/URL name", "Remark"))
+            ))
+        )
+    }
 
-    // 1. Locations extract karein (Jo null na hon aur unique hon)
     val locationsList = remember(locationResp) {
         locationResp.mapNotNull { it.locationName }.distinct()
     }
+
+    // --- 2. STATE MANAGEMENT ---
+    val scrollState = rememberScrollState()
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
     var selectedSubCategory by remember { mutableStateOf<SubCategory?>(null) }
-
-    // formValues mein hum Text ya Image ka URI store karenge
     val formValues = remember { mutableStateMapOf<String, Any>() }
 
+    var altMobile by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var activeImageField by remember { mutableStateOf<String?>(null) }
 
-    // Mock Data
-   // val locationsList = listOf("Noida Office", "Delhi Hub", "Gurgaon Site", "Mumbai DataCenter")
-    val categories = listOf(
-        Category("1", "Network Connectivity Issues", listOf(
-            SubCategory("1.1", "Link down/No internet", listOf("Choose Location", "Attach RX Power Snap", "Remark")),
-            SubCategory("1.2", "Speed Issues (Download or Upload)", listOf("Choose Location", "Attach Speedtest snap along with CCR wan Port Snap", "Remark")),
-            SubCategory("1.3", "Packet Loss%/ Latency", listOf("Choose Location", "Attach Logs snap with CCR wan port Snap", "Remark")),
-            SubCategory("1.4", "IP issues", listOf("Choose Location", "Write IP", "Remark")),
-            SubCategory("1.5", "Wireless Device Issues", listOf("Choose Location", "Issue Brief")),
-            SubCategory("1.6", "ONU power issues", listOf("Location Name", "Remark")),
-            SubCategory("1.7", "General Mikrotik/Hardware Issues", listOf("Location Name", "Remark")),
-            SubCategory("1.8", "Website/URL issues", listOf("Location Name", "Write website/URL name", "Remark"))
-        ))
-    )
+    // Native Image Picker Initialization
+    val picker = rememberImagePicker { bytes ->
+        bytes?.let {
+            activeImageField?.let { fieldName ->
+                // Encodes to Base64 and stores it in the map
+                formValues[fieldName] = encodeBase64(it)
+            }
+        }
+    }
 
+    // --- 3. UI LAYOUT ---
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState) // Crucial for visibility of bottom items
     ) {
         Text("Report an Issue", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(16.dp))
 
-        // --- Category Selection ---
+        // Fixed Contact Fields
+        AppTextField(
+            value = altMobile,
+            onChange = { altMobile = it },
+            label = "Alternate Mobile",
+            inputType = InputType.NUMBER
+        )
+        Spacer(Modifier.height(8.dp))
+        AppTextField(
+            value = email,
+            onChange = { email = it },
+            label = "Email",
+            inputType = InputType.EMAIL
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        // Category Dropdown
         DropdownSelector(
             label = "Select Category",
             options = categories.map { it.name },
@@ -69,31 +105,31 @@ fun SupportContent(locationResp: List<PlanResponse>) {
             }
         )
 
-        // --- Sub-Category Selection ---
-        if (selectedCategory != null) {
+        // Sub-Category Dropdown (Visible only if Category is selected)
+        selectedCategory?.let { category ->
             Spacer(Modifier.height(12.dp))
             DropdownSelector(
                 label = "Select Sub-Category",
-                options = selectedCategory!!.subCategories.map { it.name },
+                options = category.subCategories.map { it.name },
                 selectedOption = selectedSubCategory?.name ?: "",
                 onOptionSelected = { name ->
-                    selectedSubCategory = selectedCategory!!.subCategories.find { it.name == name }
+                    selectedSubCategory = category.subCategories.find { it.name == name }
                     formValues.clear()
                 }
             )
         }
 
-        // --- Dynamic Fields ---
-        if (selectedSubCategory != null) {
+        // Dynamic Fields & Submit Button
+        selectedSubCategory?.let { sub ->
             Spacer(Modifier.height(24.dp))
             Text("Details", style = MaterialTheme.typography.titleSmall, color = Color.Gray)
 
-            selectedSubCategory!!.fields.forEach { field ->
-                Spacer(Modifier.height(8.dp))
+            sub.fields.forEach { field ->
+                Spacer(Modifier.height(12.dp))
 
                 when {
-                    // Dropdown logic for "Choose Location"
-                    field == "Choose Location" -> {
+                    // Location selection
+                    field.contains("Location", ignoreCase = true) -> {
                         DropdownSelector(
                             label = field,
                             options = locationsList,
@@ -102,29 +138,28 @@ fun SupportContent(locationResp: List<PlanResponse>) {
                         )
                     }
 
-                    // Button logic for "Attach"
-                    field.contains("Attach", ignoreCase = true) -> {
-                        val hasFile = formValues.containsKey(field)
-                        OutlinedButton(
-                            onClick = {
+                    // Native Image Picker Button
+                    field.contains("Attach", ignoreCase = true) || field.contains("Snap", ignoreCase = true) -> {
+                        val isAttached = formValues.containsKey(field)
 
+                        Button(
+                            onClick = {
+                                activeImageField = field
+                                picker.pickImage()
                             },
                             modifier = Modifier.fillMaxWidth().height(56.dp),
                             shape = RoundedCornerShape(8.dp),
-                            colors = if (hasFile) ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFFE8F5E9))
-                            else ButtonDefaults.outlinedButtonColors()
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (isAttached) Color(0xFF4CAF50) else MaterialTheme.colorScheme.secondary
+                            )
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(if (hasFile) Icons.Default.CheckCircle else Icons.Default.CameraAlt,
-                                    contentDescription = null,
-                                    tint = if (hasFile) Color(0xFF2E7D32) else MaterialTheme.colorScheme.primary)
-                                Spacer(Modifier.width(8.dp))
-                                Text(if (hasFile) "File Attached" else field)
-                            }
+                            Icon(if (isAttached) Icons.Default.CheckCircle else Icons.Default.AddAPhoto, null)
+                            Spacer(Modifier.width(8.dp))
+                            Text(if (isAttached) "Image Attached" else field)
                         }
                     }
 
-                    // Text field for everything else (including Location Name)
+                    // Standard Text Input
                     else -> {
                         OutlinedTextField(
                             value = formValues[field]?.toString() ?: "",
@@ -137,54 +172,30 @@ fun SupportContent(locationResp: List<PlanResponse>) {
                 }
             }
 
-            Button(
-                onClick = { /* Submit logic: formValues contains all data */ },
-                modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text("Submit Report")
-            }
-        }
-    }
+            Spacer(Modifier.height(32.dp))
 
+            // THE SUBMIT BUTTON
+            AppButton(
+                text = "Submit Report",
+                onClick = {
+                    val finalData = buildMap {
+                        putAll(formValues) // All text and location data
 
-}
+                        // Extract any Base64 image and assign to 'image' key
+                        val base64Image = formValues.values.find { it is String && it.length > 100 }
+                        base64Image?.let { put("image", it) }
 
-@Composable
-fun DropdownSelector(
-    label: String,
-    options: List<String>,
-    selectedOption: String,
-    onOptionSelected: (String) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(modifier = Modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = selectedOption,
-            onValueChange = {},
-            label = { Text(label) },
-            readOnly = true,
-            modifier = Modifier.fillMaxWidth(),
-            trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
-            shape = RoundedCornerShape(8.dp)
-        )
-        Box(modifier = Modifier.matchParentSize().clickable { expanded = !expanded })
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth(0.9f)
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option) },
-                    onClick = {
-                        onOptionSelected(option)
-                        expanded = false
+                        put("alt_mobile", altMobile)
+                        put("email", email)
+                        put("category", selectedCategory?.name.orEmpty())
+                        put("sub_category", sub.name)
                     }
-                )
-            }
+                    onSubmit(finalData)
+                }
+            )
+
+            // Padding at the bottom to ensure scrollability
+            Spacer(Modifier.height(100.dp))
         }
     }
 }

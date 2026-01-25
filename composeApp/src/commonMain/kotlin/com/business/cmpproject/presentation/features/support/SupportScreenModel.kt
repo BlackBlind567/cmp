@@ -1,7 +1,7 @@
 package com.business.cmpproject.presentation.features.support
 
 import SupportRequest
-import com.business.cmpproject.core.BaseScreenModel
+import com.business.cmpproject.core.base.BaseScreenModel
 import com.business.cmpproject.core.network.NetworkResult
 import com.business.cmpproject.core.state.UiEvent.ShowSnackBar
 import com.business.cmpproject.core.state.UiState
@@ -20,9 +20,6 @@ class SupportScreenModel(
 
     private val _state = MutableStateFlow<UiState<Any>>(UiState.Loading)
     val state: StateFlow<UiState<Any>> = _state
-
-
-
 
     fun submitReport(req: SupportRequest) {
         screenModelScope.launch {

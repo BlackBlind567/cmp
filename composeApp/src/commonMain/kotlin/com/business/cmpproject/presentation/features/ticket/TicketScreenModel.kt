@@ -1,6 +1,6 @@
 package com.business.cmpproject.presentation.features.ticket
 
-import com.business.cmpproject.core.BaseScreenModel
+import com.business.cmpproject.core.base.BaseScreenModel
 import com.business.cmpproject.core.network.NetworkResult
 import com.business.cmpproject.core.state.UiState
 import com.business.cmpproject.core.storage.LocalStorage
