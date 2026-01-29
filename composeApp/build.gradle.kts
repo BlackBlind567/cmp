@@ -98,11 +98,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.business.cmpproject"
+    namespace = "com.hybrid.internet"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.business.cmpproject"
+        applicationId = "com.hybrid.internet"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -132,7 +132,7 @@ dependencies {
 compose.resources {
     publicResClass = true
   //  packageOfResClass  = "com.business.cmpproject.composeapp.generated"
-    packageOfResClass  = "com.business.cmpproject.composeapp.generated.resources"
+    packageOfResClass  = "com.hybrid.internet.composeapp.generated.resources"
     generateResClass = auto
 }
 

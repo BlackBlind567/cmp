@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		653A10ADC06EC9C4481C0FB6 /* CmpProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CmpProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		653A10ADC06EC9C4481C0FB6 /* Hybrid Internet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hybrid Internet.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -50,7 +50,7 @@
 		1B51E1DC071F48119C1C63D7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				653A10ADC06EC9C4481C0FB6 /* CmpProject.app */,
+				653A10ADC06EC9C4481C0FB6 /* Hybrid Internet.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -87,7 +87,7 @@
 			packageProductDependencies = (
 			);
 			productName = iosApp;
-			productReference = 653A10ADC06EC9C4481C0FB6 /* CmpProject.app */;
+			productReference = 653A10ADC06EC9C4481C0FB6 /* Hybrid Internet.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -241,6 +241,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your gallery to upload profile photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -250,6 +251,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.hybrid.internet;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -337,6 +339,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your gallery to upload profile photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -346,6 +349,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.hybrid.internet;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
