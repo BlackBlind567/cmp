@@ -28,6 +28,7 @@ class HomeScreen : Screen {
 // Find the parent navigator if the current one is a TabNavigator
         val rootNavigator = navigator.parent ?: navigator
         val isDark = isSystemInDarkTheme()
+        val user = viewModel.userData.collectAsState().value
         AppScaffold(events = viewModel.events) {
             // Use a 'when' block to safely handle states
             when (val state = uiState) {
@@ -50,6 +51,8 @@ class HomeScreen : Screen {
                             ))
                         },
                         onInvoiceClick = { /* ... */ },
+                        userName = user?.customer_name?:"",
+                        userCompany = user?.company_name?:""
 
                     )
                 }

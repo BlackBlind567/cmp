@@ -1,6 +1,6 @@
 package com.hybrid.internet.presentation.features.ticket
 
-import SupportScreen
+import com.hybrid.internet.presentation.features.support.SupportScreen
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hybrid.internet.core.state.UiState
+import com.hybrid.internet.domain.repository.RefreshableScreen
 import com.hybrid.internet.presentation.features.ticketHistory.TicketHistoryScreen
 import com.hybrid.internet.presentation.theme.CreamBackground
 import com.hybrid.internet.presentation.theme.DarkBackground
@@ -48,47 +50,51 @@ class TicketHistoryList : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
+
         val isDark = isSystemInDarkTheme()
         val screenModel = getScreenModel<TicketScreenModel>()
-
         val state by screenModel.state.collectAsState()
-        val isPaginationLoading by screenModel.isPaginationLoading.collectAsState()
-        val listState = rememberLazyListState()
+
         val navigator = LocalNavigator.currentOrThrow
         val rootNavigator = navigator.parent ?: navigator
-        // Pagination Trigger: Detect when user reaches near bottom
-        val shouldLoadMore = remember {
-            derivedStateOf {
-                val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()
-                lastVisibleItem != null && lastVisibleItem.index >= listState.layoutInfo.totalItemsCount - 3
-            }
-        }
-
-        LaunchedEffect(shouldLoadMore.value) {
-            if (shouldLoadMore.value) {
-                screenModel.loadTicketHistory(isRefresh = false)
-            }
-        }
 
         Scaffold(
             floatingActionButton = {
                 ExtendedFloatingActionButton(
-                    onClick = { rootNavigator.push(SupportScreen()) },
+                    onClick = {
+                        rootNavigator.push(
+                            SupportScreen(
+                                onRefresh = {
+                                    println("we get refresh")
+                                    screenModel.refresh()
+                                }
+                            )
+                        )
+                    },
                     containerColor = if (isDark) PinkPrimary else GreenPrimary,
                     contentColor = Color.White,
-                    icon = { Icon(Icons.Default.SupportAgent, contentDescription = null) },
+                    icon = {
+                        Icon(Icons.Default.SupportAgent, null)
+                    },
                     text = { Text("Support") }
                 )
             },
             containerColor = if (isDark) DarkBackground else CreamBackground,
             contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) { padding ->
-            Box(modifier = Modifier.padding(padding).fillMaxSize()) {
+
+            Box(
+                modifier = Modifier
+                    .padding(padding)
+                    .fillMaxSize()
+            ) {
+
                 when (val current = state) {
+
                     is UiState.Loading -> {
                         CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center),
-                            color = GreenPrimary
+                            color = if (isDark) PinkPrimary else GreenPrimary
                         )
                     }
 
@@ -98,7 +104,8 @@ class TicketHistoryList : Screen {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(current.message, color = Color.Red)
-                            Button(onClick = { screenModel.loadTicketHistory(true) }) {
+                            Spacer(Modifier.height(12.dp))
+                            Button(onClick = { screenModel.refresh() }) {
                                 Text("Retry")
                             }
                         }
@@ -106,38 +113,49 @@ class TicketHistoryList : Screen {
 
                     is UiState.Success -> {
                         LazyColumn(
-                            state = listState,
-                            modifier = Modifier.fillMaxSize(),
                             contentPadding = PaddingValues(12.dp)
                         ) {
+
                             items(current.data) { ticket ->
-                                TicketHistoryContent(ticket, isDark, onTicketClick = { id ->
-                                    rootNavigator.push(TicketHistoryScreen(id))
-                                })
-                                Spacer(modifier = Modifier.height(8.dp))
+                                TicketHistoryContent(
+                                    item = ticket,
+                                    isDark = isDark,
+                                    onTicketClick = { id ->
+                                        rootNavigator.push(
+                                            TicketHistoryScreen(id)
+                                        )
+                                    }
+                                )
+                                Spacer(Modifier.height(8.dp))
                             }
 
-                            // FOOTER LOADER: Only shows when fetching NEXT page
-                            if (isPaginationLoading) {
-                                item {
+                            // ✅ Pagination trigger (PlanTracking style)
+                            item {
+                                if (screenModel.canLoadMore) {
+                                    LaunchedEffect(Unit) {
+                                        screenModel.loadNextPage()
+                                    }
                                     Box(
-                                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         CircularProgressIndicator(
-                                            modifier = Modifier.size(32.dp),
-                                            color = GreenPrimary,
-                                            strokeWidth = 3.dp
+                                            strokeWidth = 3.dp,
+                                            color = GreenPrimary
                                         )
                                     }
                                 }
                             }
                         }
                     }
-                    else -> { /* Handle Idle or other states */ }
+
+                    else -> Unit
                 }
             }
         }
     }
 }
+
 

@@ -29,16 +29,19 @@ fun HomeScreenContent(data: HomeResponse, isDark: Boolean,
                       onViewAllTickets: () -> Unit,
                       onTicketClick: (Ticket) -> Unit,
                       onViewAllInvoices: () -> Unit,
-                      onInvoiceClick: (Invoice) -> Unit) {
+                      onInvoiceClick: (Invoice) -> Unit,
+                      userName: String,
+                      userCompany: String
+) {
     val accentColor = if (isDark) PinkPrimary else GreenPrimary
     val surfaceColor = if (isDark) DarkSurface else CreamSurface
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 20.dp)
+        contentPadding = PaddingValues(bottom = 20.dp, top = 20.dp)
     ) {
         // --- 1. Top Welcome Bar ---
         item {
-            DashboardTopBar(name = "Aakash", company = "Atoms Group", isDark = isDark)
+            DashboardTopBar(name = userName, company = userCompany, isDark = isDark)
         }
 
         // --- 2. Main Financial Highlight ---

@@ -1,7 +1,11 @@
 package com.hybrid.internet.presentation.features.ticket
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.hybrid.internet.core.base.BaseScreenModel
 import com.hybrid.internet.core.network.NetworkResult
+import com.hybrid.internet.core.state.UiEvent
 import com.hybrid.internet.core.state.UiState
 import com.hybrid.internet.core.storage.LocalStorage
 import com.hybrid.internet.data.model.response.TicketData
@@ -15,64 +19,77 @@ class TicketScreenModel(
     private val storage: LocalStorage
 ) : BaseScreenModel() {
 
-    private val _tickets = MutableStateFlow<List<TicketData>>(emptyList())
-    private val _state = MutableStateFlow<UiState<List<TicketData>>>(UiState.Loading)
+    private val _state =
+        MutableStateFlow<UiState<List<TicketData>>>(UiState.Loading)
     val state: StateFlow<UiState<List<TicketData>>> = _state
 
-    // Pagination states
-    private val _isPaginationLoading = MutableStateFlow(false)
-    val isPaginationLoading: StateFlow<Boolean> = _isPaginationLoading
-
     private var currentPage = 1
-    private var isLastPage = false
-    private var isFetching = false
+    private var lastPage: Int = 1
+
+    var canLoadMore by mutableStateOf(false)
+        private set
+
+    private val allTickets = mutableListOf<TicketData>()
 
     init {
-        loadTicketHistory(isRefresh = true)
+        loadTickets(isRefresh = true)
     }
 
-    fun loadTicketHistory(isRefresh: Boolean = false) {
-        if (isFetching || (isLastPage && !isRefresh)) return
+    fun refresh() {
+        println("inside refresh")
+        currentPage = 1
+        allTickets.clear()
+        loadTickets(isRefresh = true)
+    }
 
-        if (isRefresh) {
-            currentPage = 1
-            isLastPage = false
-            _tickets.value = emptyList()
-            _state.value = UiState.Loading
-        } else {
-            _isPaginationLoading.value = true
+    fun loadNextPage() {
+        if (currentPage < lastPage) {
+            currentPage++
+            loadTickets(isRefresh = false)
         }
+    }
 
-        isFetching = true
+    private fun loadTickets(isRefresh: Boolean) {
         screenModelScope.launch {
+
+            if (isRefresh) {
+                _state.value = UiState.Loading
+            }
+
             try {
-                // API call with page parameter
                 when (val result = repo.getTicketList(page = currentPage)) {
+
                     is NetworkResult.Success -> {
-                        val responseData = result.data // TicketPage object
-                        val newTickets = responseData.data
+                        val pageData = result.data
 
-                        if (newTickets.isNotEmpty()) {
-                            _tickets.value = _tickets.value + newTickets
-                            _state.value = UiState.Success(_tickets.value)
+                        lastPage = pageData.lastPage!!
+                        allTickets.addAll(pageData.data)
 
-                            // Check next page existence
-                            isLastPage = responseData.nextPageUrl == null
-                            currentPage++
-                        } else {
-                            isLastPage = true
-                            if (isRefresh) _state.value = UiState.Success(emptyList())
-                        }
+                        // 🔥 NEW list reference every time
+                        _state.value = UiState.Success(allTickets.toList())
+
+                        canLoadMore = currentPage < lastPage
                     }
+
                     is NetworkResult.Failure -> {
-                        _state.value = UiState.Error(result.error.message)
+                        if (isRefresh) {
+                            _state.value =
+                                UiState.Error(result.error.message)
+                        }
+
+                        sendEvent(
+                            UiEvent.ShowSnackBar(
+                                result.error.message ?: "Failed to load tickets",
+                                isError = true
+                            )
+                        )
                     }
                 }
             } catch (e: Exception) {
-                _state.value = UiState.Error(e.message ?: "Unknown Error")
-            } finally {
-                isFetching = false
-                _isPaginationLoading.value = false
+                if (isRefresh) {
+                    _state.value =
+                        UiState.Error(e.message ?: "Unknown Error")
+                }
             }
         }
     }

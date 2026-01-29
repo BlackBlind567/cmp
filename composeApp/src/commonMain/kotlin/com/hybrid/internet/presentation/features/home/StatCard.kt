@@ -41,31 +41,31 @@ fun StatCard(
         if (isDark) DarkSurface else CreamSurface
     }
 
-    val accentColor = if (isDark) PinkPrimary else GreenPrimary
+    val accentColor = if (isDark) DarkTextSecondary else LightTextSecondary
     val primaryText = if (isDark) DarkTextPrimary else LightTextPrimary
 
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = containerColor),
+//        colors = CardDefaults.elevatedCardColors(containerColor = containerColor),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
     ) {
         Row(
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Icon background
             Surface(
                 shape = CircleShape,
                 color = accentColor.copy(alpha = 0.15f),
-                modifier = Modifier.size(56.dp)
+                modifier = Modifier.size(40.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
                         tint = accentColor,
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }

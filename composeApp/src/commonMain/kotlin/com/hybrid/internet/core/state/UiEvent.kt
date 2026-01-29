@@ -5,4 +5,7 @@ sealed class UiEvent {
         val message: String,
         val isError: Boolean = true
     ) : UiEvent()
+    object NavigateBack : UiEvent()   // 👈 ADD THIS
+
+    object RefreshPrevious : UiEvent()   // 👈 ADD THIS
 }

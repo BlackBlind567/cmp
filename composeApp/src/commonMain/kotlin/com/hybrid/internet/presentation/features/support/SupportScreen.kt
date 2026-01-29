@@ -1,114 +1,92 @@
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
+package com.hybrid.internet.presentation.features.support
+
+import SupportRequest
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.hybrid.internet.core.state.UiEvent
 import com.hybrid.internet.core.state.UiState
 import com.hybrid.internet.data.model.response.PlanResponse
-import com.hybrid.internet.presentation.features.home.HomeScreen
+import com.hybrid.internet.domain.repository.RefreshableScreen
+import com.hybrid.internet.presentation.components.AppScaffold
 import com.hybrid.internet.presentation.features.plans.CustomerPlansScreenModel
-import com.hybrid.internet.presentation.features.support.SupportContent
-import com.hybrid.internet.presentation.features.support.SupportScreenModel
 
-class SupportScreen : Screen {
+class SupportScreen( val onRefresh: () -> Unit = {}) : Screen {
 
     @Composable
     override fun Content() {
+
         val screenModel = getScreenModel<SupportScreenModel>()
         val plansModel = getScreenModel<CustomerPlansScreenModel>()
-
-        val navigator = LocalNavigator.currentOrThrow
-        val rootNavigator = navigator.parent ?: navigator
-        val planState by plansModel.state.collectAsState()
         val submitState by screenModel.state.collectAsState()
+        val planState by plansModel.state.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
+        val isDark = isSystemInDarkTheme()
+        // ✅ Handle one-time UI events here
+        LaunchedEffect(Unit) {
+            screenModel.events.collect { event ->
+                when (event) {
 
-        val snackbarHostState = remember { SnackbarHostState() }
-
-        // --- Handle Submission Side Effects ---
-        LaunchedEffect(submitState) {
-            when (submitState) {
-                is UiState.Success -> {
-                    // Navigate to Home or Pop the screen on success
-//                    navigator.pop()
-                    // Or navigator.push(HomeScreen())
-                    rootNavigator.push(HomeScreen())
+                    UiEvent.NavigateBack -> {
+                        println("Navigate back")
+                        onRefresh()
+                        navigator.pop()
+                    }
+                    else -> Unit
                 }
-                is UiState.Error -> {
-                    val errorMessage = (submitState as UiState.Error).message
-                    snackbarHostState.showSnackbar(
-                        message = errorMessage ?: "Failed to submit report",
-                        duration = SnackbarDuration.Short
-                    )
-                }
-                else -> Unit
             }
         }
 
-        Scaffold(
-            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-        ) { padding ->
-            Box(modifier = Modifier.padding(padding)) {
-                when (planState) {
-                    is UiState.Loading -> {
-//                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//                            CircularProgressIndicator()
-//                        }
-                    }
-                    is UiState.Success -> {
-                        val planData = (planState as UiState.Success<List<PlanResponse>>).data
-                        SupportContent(
-                            locationResp = planData,
-                            onSubmit = { payload ->
-                                screenModel.submitReport(
-                                    req = SupportRequest(
-                                        altMobile = payload["alt_mobile"]?.toString() ?: "",
-                                        altEmail = payload["email"]?.toString() ?: "",
-                                        category = payload["category"]?.toString() ?: "",
-                                        subCategory = payload["sub_category"]?.toString() ?: "",
-                                        location = payload["location"]?.toString() ?: "",
-                                        remark = payload["remark"]?.toString() ?: "",
-                                        message = payload["message"]?.toString() ?: "",
-                                        image = payload["image"]?.toString() ?: ""
-                                    )
-                                )
-                            }
-                        )
-                    }
-                    is UiState.Error -> {
-                        Text("Error: ${(planState as UiState.Error).message}")
-                    }
-                    else -> Text("No data found")
+        AppScaffold(events = screenModel.events) {
+
+            when (planState) {
+
+                is UiState.Loading -> {
+                    // Optional loader
                 }
 
-                // Show a full-screen loader while submitting
-//                if (submitState is UiState.Loading) {
-//                    Surface(
-//                        modifier = Modifier.fillMaxSize(),
-//                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
-//                    ) {
-//                        Box(contentAlignment = Alignment.Center) {
-//                            CircularProgressIndicator()
-//                        }
-//                    }
-//                }
+                is UiState.Success -> {
+                    val plans =
+                        (planState as UiState.Success<List<PlanResponse>>).data
+
+                    SupportContent(
+                        locationResp = plans,
+                        isSubmitting = submitState is UiState.Loading,
+                        onSubmit = { payload ->
+                            screenModel.submitReport(
+                                SupportRequest(
+                                    altMobile = payload["alt_mobile"]?.toString().orEmpty(),
+                                    altEmail = payload["email"]?.toString().orEmpty(),
+                                    category = payload["category"]?.toString().orEmpty(),
+                                    subCategory = payload["sub_category"]?.toString().orEmpty(),
+                                    location = payload["location"]?.toString().orEmpty(),
+                                    remark = payload["remark"]?.toString().orEmpty(),
+                                    message = payload["message"]?.toString().orEmpty(),
+                                    image = payload["image"]?.toString().orEmpty()
+                                )
+                            )
+                        },
+                        onBack = {
+                            navigator.pop()
+                        },
+                        isDark = isDark
+                    )
+                }
+
+                is UiState.Error -> {
+                    Text("Failed to load plans")
+                }
+
+                else -> Unit
             }
         }
     }
 }
+

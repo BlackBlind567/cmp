@@ -77,7 +77,7 @@ val coreModule = module {
 
     // ---- ViewModels ----
     factory { SplashScreenModel(get()) }
-    factory { HomeScreenModel(get()) }
+    factory { HomeScreenModel(get(), get()) }
     factory { CustomerPlansScreenModel(get()) }
     factory { PlanTrackingScreenModel(get()) }
     factory { ProfileScreenModel(get()) }

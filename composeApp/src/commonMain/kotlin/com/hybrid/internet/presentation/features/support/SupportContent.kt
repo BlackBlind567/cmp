@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.hybrid.internet.core.base.encodeBase64
 import com.hybrid.internet.core.image.rememberImagePicker
+import com.hybrid.internet.core.validation.Validator.mobile
 import com.hybrid.internet.data.model.response.PlanResponse
 import com.hybrid.internet.data.model.supportmodel.Category
 import com.hybrid.internet.data.model.supportmodel.SubCategory
@@ -21,11 +22,18 @@ import com.hybrid.internet.presentation.components.AppButton
 import com.hybrid.internet.presentation.components.AppTextField
 import com.hybrid.internet.presentation.components.DropdownSelector
 import com.hybrid.internet.presentation.components.InputType
+import com.hybrid.internet.presentation.components.StandardTopAppBar
+import com.hybrid.internet.presentation.theme.CreamBackground
+import com.hybrid.internet.presentation.theme.DarkBackground
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SupportContent(
     locationResp: List<PlanResponse>,
-    onSubmit: (Map<String, Any>) -> Unit = {}
+    isSubmitting: Boolean = false,
+    onSubmit: (Map<String, Any>) -> Unit = {},
+    onBack: () -> Unit = {},
+    isDark: Boolean,
 ) {
 
     // --- 1. DATA SETUP ---
@@ -115,22 +123,36 @@ fun SupportContent(
     }
 
     /* ---------------- UI ---------------- */
-
+    Scaffold(
+        containerColor = if (isDark) DarkBackground else CreamBackground,
+        topBar = {
+            StandardTopAppBar(
+                title = "Support Ticket",
+                subtitle =  "Add ticket to resolve issue",
+                showBack = true,
+                onBack = onBack
+            )
+        }
+    ) { padding ->
     Column(
         modifier = Modifier
+            .padding(padding)
+            .padding(horizontal = 16.dp)
             .fillMaxSize()
-            .padding(16.dp)
             .verticalScroll(scrollState)
     ) {
 
-        Text("Report an Issue", style = MaterialTheme.typography.headlineMedium)
-        Spacer(Modifier.height(16.dp))
+
 
         /* ---- Contact ---- */
 
         AppTextField(
             value = altMobile,
-            onChange = { altMobile = it },
+            onChange = { input ->
+                if (input.length <= 10 && input.all { it.isDigit() }) {
+                    altMobile = input
+                }
+            },
             label = "Alternate Mobile",
             inputType = InputType.NUMBER
         )
@@ -238,6 +260,7 @@ fun SupportContent(
         AppButton(
             text = "Submit Report",
             enabled = isFormValid,
+            loading = isSubmitting,
             onClick = {
                 val finalData = mutableMapOf<String, Any>()
 
@@ -276,5 +299,5 @@ fun SupportContent(
 
 
         Spacer(Modifier.height(100.dp))
-    }
+    }}
 }

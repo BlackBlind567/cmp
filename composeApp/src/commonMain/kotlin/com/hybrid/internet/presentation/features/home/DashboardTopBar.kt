@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import com.hybrid.internet.presentation.theme.DarkTextPrimary
 import com.hybrid.internet.presentation.theme.DarkTextSecondary
@@ -35,7 +36,7 @@ fun DashboardTopBar(name: String, company: String, isDark: Boolean) {
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text("Welcome back,", style = MaterialTheme.typography.labelMedium, color = secondaryText)
-            Text(name, style = MaterialTheme.typography.headlineSmall, color = primaryText, fontWeight = FontWeight.Black)
+            Text(name.uppercase(), style = MaterialTheme.typography.headlineSmall, color = primaryText, fontWeight = FontWeight.Black)
             Text(company, style = MaterialTheme.typography.labelSmall, color = if (isDark) PinkPrimary else GreenPrimary)
         }
         // Premium Profile Placeholder
@@ -45,7 +46,7 @@ fun DashboardTopBar(name: String, company: String, isDark: Boolean) {
             modifier = Modifier.size(48.dp)
         ) {
             Box(contentAlignment = Alignment.Center) {
-                Text(name.take(1), fontWeight = FontWeight.Bold, color = if (isDark) PinkPrimary else GreenPrimary)
+                Text(name.take(1).uppercase(), fontWeight = FontWeight.Bold, color = if (isDark) PinkPrimary else GreenPrimary)
             }
         }
     }

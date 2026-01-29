@@ -34,6 +34,7 @@ fun DashboardContent() {
         val topBarSubtitle = when (currentTab) {
             is PlansTab -> "Manage Subscriptions"
             is ServicesTab -> "Manage new link requests"
+            is TicketsTab -> "Manage Tickets"
 //            is InvoicesTab -> "Billing History"
             else -> null
         }
