@@ -1,6 +1,7 @@
 package com.hybrid.internet.core.network
 
 import com.hybrid.internet.core.log.AppLogger
+import com.hybrid.internet.core.log.AppLogger.e
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
@@ -33,6 +34,12 @@ suspend inline fun <reified T> blindApiCall(
                                 HttpError.Unknown(body.message)
                             )
                     }
+
+                    HttpStatusCode.BadRequest -> {
+                        val body = response.body<ApiResponse<T>>()
+                        NetworkResult.Failure(HttpError.Unknown(body.message))
+                    }
+
 
                     HttpStatusCode.Unauthorized ->
                         NetworkResult.Failure(HttpError.Unauthorized)

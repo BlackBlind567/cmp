@@ -21,7 +21,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,8 +33,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.hybrid.internet.core.state.UiEvent
+import com.hybrid.internet.core.state.UiState
 import com.hybrid.internet.presentation.components.AppScaffold
 import com.hybrid.internet.presentation.components.StandardTopAppBar
+import com.hybrid.internet.presentation.features.changePassword.ChangePasswordScreen
 import com.hybrid.internet.presentation.features.login.LoginScreen
 import com.hybrid.internet.presentation.theme.CreamBackground
 import com.hybrid.internet.presentation.theme.DarkBackground
@@ -42,95 +47,42 @@ import com.hybrid.internet.presentation.theme.PinkPrimary
 import com.hybrid.internet.presentation.theme.PinkSecondary
 
 class ProfileScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
+
     @Composable
     override fun Content() {
+
         val navigator = LocalNavigator.currentOrThrow
         val rootNavigator = navigator.parent ?: navigator
         val screenModel = getScreenModel<ProfileScreenModel>()
-        val user = screenModel.userData.collectAsState().value
+
+        val user by screenModel.userData.collectAsState()
+        val state by screenModel.state.collectAsState()
         val isDark = isSystemInDarkTheme()
 
-        AppScaffold(events = screenModel.events) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(if (isDark) DarkBackground else CreamBackground)
-            ) {
-                // Custom TopBar (Jo pehle banaya tha)
-                StandardTopAppBar(
-                    title = "My Profile",
-                    isTitleCenter = false,
-                    showBack = false
-                )
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    // --- Profile Header (Avatar + Name) ---
-                    Surface(
-                        modifier = Modifier.size(90.dp),
-                        shape = CircleShape,
-                        color = (if (isDark) PinkPrimary else GreenPrimary).copy(alpha = 0.1f)
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(
-                                text = user?.customer_name?.take(1)?.uppercase() ?: "U",
-                                style = MaterialTheme.typography.headlineLarge,
-                                fontWeight = FontWeight.Black,
-                                color = if (isDark) PinkPrimary else GreenPrimary
-                            )
-                        }
+        // 🔥 Side-effects ONLY here
+        LaunchedEffect(Unit) {
+            screenModel.events.collect { event ->
+                when (event) {
+                    UiEvent.NavigateToLogin -> {
+                        rootNavigator.replaceAll(LoginScreen())
                     }
-
-                    Spacer(Modifier.height(12.dp))
-
-                    Text(
-                        text = user?.customer_name ?: "User Name",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = user?.company_name ?: "Company Name",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = if (isDark) PinkSecondary else GreenSecondary
-                    )
-
-                    Spacer(Modifier.height(32.dp))
-
-                    // --- User Info Section ---
-                    ProfileInfoCard(user, isDark)
-
-                    Spacer(Modifier.height(24.dp))
-
-                    // --- Action List ---
-                    Text(
-                        "Account Settings",
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.Gray
-                    )
-
-                    ActionItem(
-                        icon = Icons.Default.LockReset,
-                        title = "Change Password",
-                        isDark = isDark,
-                        onClick = { /* navigator.push(ChangePasswordScreen()) */ }
-                    )
-
-                    ActionItem(
-                        icon = Icons.AutoMirrored.Filled.Logout,
-                        title = "Logout",
-                        isDark = isDark,
-                        isCritical = true,
-                        onClick = { screenModel.logout { rootNavigator.replaceAll(LoginScreen()) } }
-                    )
+                    else -> Unit
                 }
             }
+        }
+
+        AppScaffold(events = screenModel.events) {
+            ProfileContent(
+                user = user,
+                isDark = isDark,
+                isLoggingOut = state is UiState.Loading,
+                onChangePassword = {
+                    rootNavigator.push(ChangePasswordScreen())
+                },
+                onLogout = {
+                    screenModel.logout()
+                }
+            )
         }
     }
 }

@@ -38,7 +38,6 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hybrid.internet.core.state.UiState
-import com.hybrid.internet.domain.repository.RefreshableScreen
 import com.hybrid.internet.presentation.features.ticketHistory.TicketHistoryScreen
 import com.hybrid.internet.presentation.theme.CreamBackground
 import com.hybrid.internet.presentation.theme.DarkBackground

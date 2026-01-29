@@ -12,6 +12,8 @@ import com.hybrid.internet.data.remote.ServiceRequestApi
 import com.hybrid.internet.data.remote.SupportApi
 import com.hybrid.internet.data.remote.TicketApi
 import com.hybrid.internet.data.remote.TicketTrackingApi
+import com.hybrid.internet.domain.repository.changePassword.ChangePasswordRepository
+import com.hybrid.internet.domain.repository.changePassword.ChangePasswordRepositoryImpl
 import com.hybrid.internet.domain.repository.login.AuthRepository
 import com.hybrid.internet.domain.repository.login.AuthRepositoryImpl
 import com.hybrid.internet.domain.repository.dashboard.DashboardRepository
@@ -26,6 +28,7 @@ import com.hybrid.internet.domain.repository.ticket.TicketDetailsRepository
 import com.hybrid.internet.domain.repository.ticket.TicketDetailsRepositoryImpl
 import com.hybrid.internet.domain.repository.ticket.TicketRepository
 import com.hybrid.internet.domain.repository.ticket.TicketRepositoryImpl
+import com.hybrid.internet.presentation.features.changePassword.ChangePasswordScreenModel
 import com.hybrid.internet.presentation.features.profile.ProfileScreenModel
 import com.hybrid.internet.presentation.features.home.HomeScreenModel
 import com.hybrid.internet.presentation.features.login.LoginScreenModel
@@ -74,13 +77,15 @@ val coreModule = module {
     single<PlanRepository> { PlanRepositoryImpl(get()) }
     single<ServiceRequestRepository> { ServiceRequestRepositoryImpl(get()) }
     single<SupportRepository> { SupportRepositoryImpl(get()) }
+    single<ChangePasswordRepository> { ChangePasswordRepositoryImpl(get()) }
 
     // ---- ViewModels ----
     factory { SplashScreenModel(get()) }
     factory { HomeScreenModel(get(), get()) }
     factory { CustomerPlansScreenModel(get()) }
     factory { PlanTrackingScreenModel(get()) }
-    factory { ProfileScreenModel(get()) }
+    factory { ChangePasswordScreenModel(get()) }
+    factory { ProfileScreenModel(get(), get()) }
     factory { ServiceRequestScreenModel(get()) }
 
 // In your Koin Module

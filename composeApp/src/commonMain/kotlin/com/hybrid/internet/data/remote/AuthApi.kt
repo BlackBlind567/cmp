@@ -1,5 +1,7 @@
 package com.hybrid.internet.data.remote
 
+import com.hybrid.internet.core.validation.Validator.mobile
+import com.hybrid.internet.data.model.request.ChangePasswordRequest
 import com.hybrid.internet.data.model.request.LoginRequest
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -42,6 +44,21 @@ class AuthApi(
                     "otp" to otp
                 )
             )
+        }
+    }
+
+    suspend fun changePassword(
+       changePasswordRequest: ChangePasswordRequest
+    ): HttpResponse {
+        return client.post("/api/customer-change-password-api") {
+            contentType(ContentType.Application.Json)
+            setBody(changePasswordRequest)
+        }
+    }
+
+    suspend fun logout(): HttpResponse {
+        return client.post("/api/logout-customer-api") {
+            contentType(ContentType.Application.Json)
         }
     }
 }

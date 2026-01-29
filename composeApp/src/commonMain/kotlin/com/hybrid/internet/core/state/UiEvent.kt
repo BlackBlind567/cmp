@@ -8,4 +8,5 @@ sealed class UiEvent {
     object NavigateBack : UiEvent()   // 👈 ADD THIS
 
     object RefreshPrevious : UiEvent()   // 👈 ADD THIS
+    object NavigateToLogin : UiEvent() // 👈 ADD THIS
 }

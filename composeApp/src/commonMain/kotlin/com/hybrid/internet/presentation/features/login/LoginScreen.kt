@@ -37,7 +37,7 @@ class LoginScreen : Screen {
                 },
 
                 onForgotPassword = {
-                    navigator.push(ChangePasswordScreen())
+//                    navigator.push(ChangePasswordScreen())
                 }
             )
         }

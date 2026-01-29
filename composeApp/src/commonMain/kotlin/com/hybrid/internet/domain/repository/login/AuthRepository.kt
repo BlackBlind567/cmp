@@ -16,4 +16,9 @@ interface AuthRepository {
         mobile: String,
         otp: String
     ): NetworkResult<LoginResponse>
+
+    suspend fun logout(): NetworkResult<Unit>
+
+
+
 }

@@ -14,7 +14,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hybrid.internet.core.state.UiEvent
 import com.hybrid.internet.core.state.UiState
 import com.hybrid.internet.data.model.response.PlanResponse
-import com.hybrid.internet.domain.repository.RefreshableScreen
 import com.hybrid.internet.presentation.components.AppScaffold
 import com.hybrid.internet.presentation.features.plans.CustomerPlansScreenModel
 

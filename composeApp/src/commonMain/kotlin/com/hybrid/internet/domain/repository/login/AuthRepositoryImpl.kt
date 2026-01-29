@@ -32,4 +32,9 @@ class AuthRepositoryImpl(
             api.verifyOtp(mobile, otp)
         }
     }
+
+    override suspend fun logout(): NetworkResult<Unit> {
+        return blindApiCall { api.logout() }
+
+    }
 }

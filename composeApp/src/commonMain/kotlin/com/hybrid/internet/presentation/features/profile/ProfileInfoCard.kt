@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -63,20 +64,67 @@ fun InfoRow(icon: ImageVector, label: String, value: String, isDark: Boolean) {
 }
 
 @Composable
-fun ActionItem(icon: ImageVector, title: String, isDark: Boolean, isCritical: Boolean = false, onClick: () -> Unit) {
-    val color = if (isCritical) Color(0xFFD32F2F) else (if (isDark) Color.White else Color.Black)
+fun ActionItem(
+    icon: ImageVector,
+    title: String,
+    isDark: Boolean,
+    isCritical: Boolean = false,
+    loading: Boolean = false,        // 👈 NEW
+    onClick: () -> Unit
+) {
+    val textColor =
+        if (isCritical) Color(0xFFD32F2F)
+        else if (isDark) Color.White
+        else Color.Black
 
     Surface(
-        onClick = onClick,
+        onClick = { if (!loading) onClick() },   // 👈 Disable when loading
+        enabled = !loading,
         color = Color.Transparent,
-        modifier = Modifier.fillMaxWidth().height(56.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, null, tint = color, modifier = Modifier.size(20.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 12.dp)
+        ) {
+
+            // Left Icon
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = textColor,
+                modifier = Modifier.size(20.dp)
+            )
+
             Spacer(Modifier.width(16.dp))
-            Text(title, style = MaterialTheme.typography.bodyLarge, color = color, fontWeight = FontWeight.Medium)
+
+            // Title
+            Text(
+                title,
+                style = MaterialTheme.typography.bodyLarge,
+                color = textColor,
+                fontWeight = FontWeight.Medium
+            )
+
             Spacer(Modifier.weight(1f))
-            Icon(Icons.Default.ChevronRight, null, tint = Color.Gray, modifier = Modifier.size(16.dp))
+
+            // Right Side
+            if (loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(18.dp),
+                    strokeWidth = 2.dp,
+                    color = textColor
+                )
+            } else {
+                Icon(
+                    Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = Color.Gray,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
         }
     }
 }

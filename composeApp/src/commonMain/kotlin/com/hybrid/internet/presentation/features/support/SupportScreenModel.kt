@@ -32,7 +32,6 @@ class SupportScreenModel(
                     _state.value = UiState.Success(result.data)
 
                     // 🔔 Tell UI to go back
-                    sendEvent(UiEvent.RefreshPrevious)
                     sendEvent(UiEvent.NavigateBack)
                 }
 
