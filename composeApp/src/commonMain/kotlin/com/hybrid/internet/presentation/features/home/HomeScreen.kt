@@ -29,6 +29,7 @@ class HomeScreen : Screen {
         val rootNavigator = navigator.parent ?: navigator
         val isDark = isSystemInDarkTheme()
         val user = viewModel.userData.collectAsState().value
+        println("HomeScreen Content ==> $user")
         AppScaffold(events = viewModel.events) {
             // Use a 'when' block to safely handle states
             when (val state = uiState) {

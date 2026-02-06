@@ -7,8 +7,11 @@ object AppConfig {
 
     val BASE_URL: String
         get() = when (ENVIRONMENT) {
-            Environment.DEV -> "https://uat.muftinternet.com"
-            Environment.UAT -> "https://uat.muftinternet.com"
-            Environment.PROD -> "https://api.yourapp.com"
+//            Environment.DEV -> "https://uat.muftinternet.com"
+//            Environment.UAT -> "https://erp.hybridisp.com"
+//            Environment.PROD -> "https://api.yourapp.com"
+            Environment.DEV -> "https://erp.hybridisp.com"
+            Environment.UAT -> "https://erp.hybridisp.com"
+            Environment.PROD -> "https://erp.hybridisp.com"
         }
 }

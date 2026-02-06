@@ -56,7 +56,7 @@ fun SplashContent(
 
             // 🔹 Tagline (optional but premium)
             Text(
-                text = "\uD83D\uDD39 Kal ko kareeb laye",
+                text = "\uD83D\uDD39 KAL KO KAREEB LAAYEIN",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
             )

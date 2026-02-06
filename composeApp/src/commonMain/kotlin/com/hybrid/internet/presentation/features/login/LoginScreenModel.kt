@@ -31,6 +31,8 @@ class LoginScreenModel(
 
                 is NetworkResult.Success -> {
                     storage.saveToken(result.data.token)
+                    storage.saveUser(result.data)
+                    println("LoginScreenModel login success ==> ${result.data}")
                     _state.value = Success(Unit)
 
                     sendEvent(

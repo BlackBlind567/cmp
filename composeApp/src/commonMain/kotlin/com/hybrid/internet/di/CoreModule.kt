@@ -4,6 +4,7 @@ import com.hybrid.internet.core.dispatchers.AppDispatchers
 import com.hybrid.internet.core.network.ApiClient
 import com.hybrid.internet.core.network.TokenProvider
 import com.hybrid.internet.core.session.SessionManager
+import com.hybrid.internet.core.state.UiEventBus
 import com.hybrid.internet.core.storage.LocalStorage
 import com.hybrid.internet.data.remote.AuthApi
 import com.hybrid.internet.data.remote.DashboardApi
@@ -44,7 +45,7 @@ import com.hybrid.internet.presentation.features.ticketHistory.TicketHistoryScre
 import org.koin.dsl.module
 
 val coreModule = module {
-
+    single { UiEventBus() }
     // ---- Network ----
     single { TokenProvider(get()) }
 
@@ -58,7 +59,7 @@ val coreModule = module {
     single { LocalStorage() }
 
     // ---- Session ----
-    single { SessionManager(get()) }
+    single { SessionManager(get(), get()) }
 
     // ---- API ----
     single { AuthApi(get()) }                    // HttpClient injected
@@ -70,14 +71,14 @@ val coreModule = module {
     single { SupportApi(get()) }                    // HttpClient injected
 
     // ---- Repository ----
-    single<AuthRepository> { AuthRepositoryImpl(get()) }
-    single<DashboardRepository> { DashboardRepositoryImpl(get()) }
-    single<TicketDetailsRepository> { TicketDetailsRepositoryImpl(get()) }
-    single<TicketRepository> { TicketRepositoryImpl(get()) }
-    single<PlanRepository> { PlanRepositoryImpl(get()) }
-    single<ServiceRequestRepository> { ServiceRequestRepositoryImpl(get()) }
-    single<SupportRepository> { SupportRepositoryImpl(get()) }
-    single<ChangePasswordRepository> { ChangePasswordRepositoryImpl(get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
+    single<DashboardRepository> { DashboardRepositoryImpl(get(), get()) }
+    single<TicketDetailsRepository> { TicketDetailsRepositoryImpl(get(), get()) }
+    single<TicketRepository> { TicketRepositoryImpl(get(), get()) }
+    single<PlanRepository> { PlanRepositoryImpl(get(), get()) }
+    single<ServiceRequestRepository> { ServiceRequestRepositoryImpl(get(), get()) }
+    single<SupportRepository> { SupportRepositoryImpl(get(), get()) }
+    single<ChangePasswordRepository> { ChangePasswordRepositoryImpl(get(), get()) }
 
     // ---- ViewModels ----
     factory { SplashScreenModel(get()) }

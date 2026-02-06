@@ -29,6 +29,11 @@ kotlin {
         }
     }
 
+//    storePassword=Atomshybrid##7890
+//    keyPassword=Atomshybrid##7890
+//    keyAlias=keyAtomshybrid
+//    storeFile=D:\office\comp\cmpLearning\jks\hybridInternetNew.jks
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
@@ -105,8 +110,8 @@ android {
         applicationId = "com.hybrid.internet"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 4
+        versionName = "1.4"
     }
     packaging {
         resources {

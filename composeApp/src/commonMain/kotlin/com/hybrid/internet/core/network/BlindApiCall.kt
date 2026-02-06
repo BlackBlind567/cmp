@@ -2,6 +2,7 @@ package com.hybrid.internet.core.network
 
 import com.hybrid.internet.core.log.AppLogger
 import com.hybrid.internet.core.log.AppLogger.e
+import com.hybrid.internet.core.session.SessionManager
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
@@ -10,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 suspend inline fun <reified T> blindApiCall(
+    sessionManager: SessionManager,
     crossinline apiCall: suspend () -> HttpResponse
 ): NetworkResult<T> {
 
@@ -41,8 +43,11 @@ suspend inline fun <reified T> blindApiCall(
                     }
 
 
-                    HttpStatusCode.Unauthorized ->
+                    HttpStatusCode.Unauthorized -> {
+                        val error = HttpError.Unauthorized
+                        sessionManager.handle(error)
                         NetworkResult.Failure(HttpError.Unauthorized)
+                    }
 
                     HttpStatusCode.Forbidden ->
                         NetworkResult.Failure(HttpError.Forbidden)
