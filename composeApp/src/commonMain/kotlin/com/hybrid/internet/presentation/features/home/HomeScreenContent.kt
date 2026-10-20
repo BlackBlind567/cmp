@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,9 +25,7 @@ import com.hybrid.internet.presentation.theme.PinkPrimary
 
 @Composable
 fun HomeScreenContent(data: HomeResponse, isDark: Boolean,
-                      onViewAllTickets: () -> Unit,
                       onTicketClick: (Ticket) -> Unit,
-                      onViewAllInvoices: () -> Unit,
                       onInvoiceClick: (Invoice) -> Unit,
                       userName: String,
                       userCompany: String
@@ -60,21 +57,8 @@ fun HomeScreenContent(data: HomeResponse, isDark: Boolean,
             }
         }
 
-        // --- 4. Ticket Status Row (Glassmorphism style) ---
-        item {
-            SectionHeader("Ticket Overview","View All", onViewAllTickets)
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                TicketMiniChip("Open", data.openTickets, Color(0xFFE53935), Modifier.weight(1f))
-                TicketMiniChip("Pending", data.pendingTickets, Color(0xFFF57C00), Modifier.weight(1f))
-                TicketMiniChip("Closed", data.closedTickets, Color(0xFF4CAF50), Modifier.weight(1f))
-            }
-        }
-
         // --- 5. Recent Invoices List ---
-        item { SectionHeader("Recent Invoices", "View All") }
+        item { SectionHeader("Recent Invoices", null) }
         items(data.recentInvoices.take(3)) { invoice ->
             DashboardInvoiceItem(invoice, isDark)
         }
@@ -82,9 +66,13 @@ fun HomeScreenContent(data: HomeResponse, isDark: Boolean,
         // --- 6. Recent Tickets ---
         item { SectionHeader("Active Support", null) }
         items(data.recentTickets.take(2)) { ticket ->
-            DashboardTicketItem(ticket, isDark)
+            DashboardTicketItem(
+                ticket = ticket,
+                isDark = isDark,
+                onClick = { onTicketClick(ticket) }
+            )
         }
-        item { SectionHeader("Recent Payments", "View All") }
+        item { SectionHeader("Recent Payments", null) }
 
         if (data.recentPayments.isEmpty()) {
             item {

@@ -6,6 +6,7 @@ import com.hybrid.internet.core.state.UiEvent
 import com.hybrid.internet.core.state.UiState
 import com.hybrid.internet.core.storage.LocalStorage
 import com.hybrid.internet.domain.repository.login.AuthRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,11 +21,16 @@ class OtpScreenModel(
 
     fun sendOtp(mobile: String) {
         screenModelScope.launch {
-            when (val result = repo.sendOtp(mobile)) {
+            val result = repo.sendOtp(mobile)
+
+            when (result) {
                 is NetworkResult.Success -> {
+                    delay(1000)
                     sendEvent(UiEvent.ShowSnackBar(result.data, false))
                 }
                 is NetworkResult.Failure -> {
+                    println("OTP SENT Json ==> ${result.error.message}")
+                    delay(1000)
                     sendEvent(UiEvent.ShowSnackBar(result.error.message))
                 }
             }

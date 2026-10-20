@@ -259,7 +259,7 @@ fun SupportContent(
 
         AppButton(
             text = "Submit Report",
-            enabled = isFormValid,
+            enabled = isFormValid && !isSubmitting,
             loading = isSubmitting,
             onClick = {
                 val finalData = mutableMapOf<String, Any>()

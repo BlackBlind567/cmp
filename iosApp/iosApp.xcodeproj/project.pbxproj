@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F1A000000000000000000001 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = F1A000000000000000000101 /* FirebaseCore */; };
+		F1A000000000000000000002 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = F1A000000000000000000102 /* FirebaseMessaging */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		653A10ADC06EC9C4481C0FB6 /* Hybrid Internet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hybrid Internet.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -41,6 +46,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1A000000000000000000001 /* FirebaseCore in Frameworks */,
+				F1A000000000000000000002 /* FirebaseMessaging in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +92,8 @@
 			);
 			name = iosApp;
 			packageProductDependencies = (
+				F1A000000000000000000101 /* FirebaseCore */,
+				F1A000000000000000000102 /* FirebaseMessaging */,
 			);
 			productName = iosApp;
 			productReference = 653A10ADC06EC9C4481C0FB6 /* Hybrid Internet.app */;
@@ -117,6 +126,9 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1B51E1DC071F48119C1C63D7 /* Products */;
 			projectDirPath = "";
+			packageReferences = (
+				F1A000000000000000000100 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			projectRoot = "";
 			targets = (
 				85AFC882AF35522A97E594D5 /* iosApp */,
@@ -234,6 +246,7 @@
 				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
@@ -332,6 +345,7 @@
 				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
@@ -357,6 +371,30 @@
 			name = Debug;
 		};
 /* End XCBuildConfiguration section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F1A000000000000000000100 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F1A000000000000000000101 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F1A000000000000000000100 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		F1A000000000000000000102 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F1A000000000000000000100 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCConfigurationList section */
 		D04B78CE5C926EC5DB2EF9AD /* Build configuration list for PBXProject "iosApp" */ = {

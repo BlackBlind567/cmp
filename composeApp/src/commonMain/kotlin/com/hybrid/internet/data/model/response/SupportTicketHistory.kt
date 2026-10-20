@@ -1,14 +1,18 @@
 package com.hybrid.internet.data.model.response
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class SupportTicketHistory (
-    val id: Int,
-    val ticket_id: Int,
-    val customer_id: Int,
-    val image: String,
-    val message: String,
-    val remark: String,
-    val created_at: String
+    val id: Int? = null,
+    @SerialName("ticket_id")
+    val ticketId: Int? = null,
+    @SerialName("customer_id")
+    val customerId: Int? = null,
+    val image: String? = null,
+    val message: String? = null,
+    val remark: String? = null,
+    @SerialName("created_at")
+    val createdAt: String? = null
 )

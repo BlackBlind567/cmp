@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import kotlin.math.abs
+import kotlin.math.round
 
 @Composable
 fun TotalDueCard(due: Double, monthly: Double, background: Color, accent: Color) {
@@ -32,9 +34,13 @@ fun TotalDueCard(due: Double, monthly: Double, background: Color, accent: Color)
         colors = CardDefaults.cardColors(containerColor = background),
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
-            Text("Total Outstanding Balance", color = Color.White, style = MaterialTheme.typography.labelMedium)
             Text(
-                "₹ ${due.toInt()}",
+                text = "Total Outstanding Balance",
+                color = Color.White,
+                style = MaterialTheme.typography.labelMedium
+            )
+            Text(
+                text = formatCardAmount(due),
                 color = accent,
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Black
@@ -43,17 +49,29 @@ fun TotalDueCard(due: Double, monthly: Double, background: Color, accent: Color)
             Spacer(Modifier.height(10.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth().background(Color.Black.copy(0.1f), RoundedCornerShape(16.dp)).padding(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black.copy(0.1f), RoundedCornerShape(16.dp))
+                    .padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(Icons.Default.Info, null, tint = Color.White, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    "This month's invoice: ₹${monthly.toInt()}",
+                    text = "This month's invoice: ${formatCardAmount(monthly)}",
                     color = Color.White,
                     style = MaterialTheme.typography.labelSmall
                 )
             }
         }
     }
+}
+
+private fun formatCardAmount(amount: Double): String {
+    val cents = round(amount * 100).toLong()
+    val sign = if (cents < 0) "-" else ""
+    val absoluteCents = abs(cents)
+    val wholeAmount = absoluteCents / 100
+    val decimalAmount = (absoluteCents % 100).toString().padStart(2, '0')
+    return "Rs. $sign$wholeAmount.$decimalAmount"
 }

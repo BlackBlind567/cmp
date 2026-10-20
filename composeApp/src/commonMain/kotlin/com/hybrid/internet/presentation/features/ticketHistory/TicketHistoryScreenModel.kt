@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class TicketHistoryScreenModel(
     private val repo: TicketDetailsRepository, // Naming convention synced
-    private val ticketId: Int // Passed from Screen
+    private val ticketId: String // Passed from Screen
 ) : BaseScreenModel() {
 
     private val _state = MutableStateFlow<UiState<List<TicketHistoryItem>>>(UiState.Loading)
@@ -36,7 +36,7 @@ class TicketHistoryScreenModel(
 
             // API key mapping logic
             val myKeys = mapOf(
-                "ticket_id" to ticketId.toString()
+                "ticket_id" to ticketId
             )
 
             try {

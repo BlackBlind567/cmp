@@ -23,6 +23,10 @@ class ProfileScreenModel(
         MutableStateFlow(localStorage.getUser())
     val userData: StateFlow<LoginResponse?> = _userData
 
+    fun refreshUser() {
+        _userData.value = localStorage.getUser()
+    }
+
     fun logout() {
         screenModelScope.launch {
 

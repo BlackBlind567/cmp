@@ -1,5 +1,6 @@
 package com.hybrid.internet.data.model.response
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 
@@ -12,6 +13,12 @@ data class HomeResponse(
     val customerPlanSum: Double,
     val thisMonthInvoiceAmount: Double,
     val totalDueAmount: Double,
+    @SerialName("dashboard_message")
+    val dashboardMessage: String? = null,
+    @SerialName("dashboard_button")
+    val dashboardButton: String? = null,
+    @SerialName("dashboard_link")
+    val dashboardLink: String? = null,
     val totalInvoices: Int,
     val recentInvoices: List<Invoice>,
     val recentPayments: List<Payments>,

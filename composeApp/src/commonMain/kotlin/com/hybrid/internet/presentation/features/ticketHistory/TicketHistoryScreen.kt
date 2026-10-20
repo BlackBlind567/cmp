@@ -11,7 +11,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hybrid.internet.presentation.components.AppScaffold
 import org.koin.core.parameter.parametersOf
 
-data class TicketHistoryScreen(val ticketId: Int) : Screen {
+data class TicketHistoryScreen(val ticketId: String) : Screen {
 
     @Composable
     override fun Content() {

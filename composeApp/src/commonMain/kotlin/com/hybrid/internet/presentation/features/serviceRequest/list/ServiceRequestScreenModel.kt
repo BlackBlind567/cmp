@@ -24,35 +24,54 @@ class ServiceRequestScreenModel(
     var canLoadMore by mutableStateOf(false)
     private val allRequests = mutableListOf<ServiceRequestItem>()
 
-    init { loadRequests(isRefresh = true) }
+    private var loading = false
+
+    init { loadRequests() }
 
     fun loadRequests(isRefresh: Boolean = true) {
-        if (isRefresh) {
-            currentPage = 1
-            allRequests.clear()
-        }
-
+        if (loading) return
+        loading = true
         screenModelScope.launch {
-            if (isRefresh) _state.value = UiState.Loading
-
-            when (val result = repo.getServiceRequests(currentPage)) {
-                is NetworkResult.Success -> {
-                    lastPage = result.data.lastPage
-                    allRequests.addAll(result.data.requests)
-                    _state.value = UiState.Success(allRequests.toList())
-                    canLoadMore = currentPage < lastPage
+            try {
+                if (_state.value !is UiState.Success) _state.value = UiState.Loading
+                val refreshed = if (isRefresh) mutableListOf<ServiceRequestItem>() else allRequests.toMutableList()
+                var page = if (isRefresh) 1 else currentPage + 1
+                val targetPage = if (isRefresh) currentPage else page
+                var newLastPage = lastPage
+                var loadedPage = currentPage
+                while (page <= targetPage) {
+                    when (val result = repo.getServiceRequests(page)) {
+                        is NetworkResult.Success -> {
+                            newLastPage = result.data.lastPage
+                            refreshed.addAll(result.data.requests)
+                            loadedPage = page
+                        }
+                        is NetworkResult.Failure -> {
+                            if (_state.value !is UiState.Success) _state.value = UiState.Error(result.error.message)
+                            sendEvent(com.hybrid.internet.core.state.UiEvent.ShowSnackBar(result.error.message))
+                            return@launch
+                        }
+                    }
+                    if (page >= newLastPage) break
+                    page++
                 }
-                is NetworkResult.Failure -> {
-                    if (isRefresh) _state.value = UiState.Error(result.error.toString())
-                }
+                allRequests.clear()
+                allRequests.addAll(refreshed)
+                currentPage = loadedPage
+                lastPage = newLastPage
+                canLoadMore = currentPage < lastPage
+                _state.value = UiState.Success(allRequests.toList())
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (_state.value !is UiState.Success) _state.value = UiState.Error(e.message ?: "Unable to load requests")
+            } finally {
+                loading = false
             }
         }
     }
 
     fun loadMore() {
-        if (currentPage < lastPage) {
-            currentPage++
-            loadRequests(isRefresh = false)
-        }
+        if (currentPage < lastPage) loadRequests(isRefresh = false)
     }
 }

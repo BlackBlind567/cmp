@@ -2,11 +2,16 @@ package com.hybrid.internet.presentation.features.support
 
 import SupportRequest
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -15,7 +20,9 @@ import com.hybrid.internet.core.state.UiEvent
 import com.hybrid.internet.core.state.UiState
 import com.hybrid.internet.data.model.response.PlanResponse
 import com.hybrid.internet.presentation.components.AppScaffold
+import com.hybrid.internet.presentation.components.FullScreenError
 import com.hybrid.internet.presentation.features.plans.CustomerPlansScreenModel
+import kotlinx.coroutines.flow.merge
 
 class SupportScreen( val onRefresh: () -> Unit = {}) : Screen {
 
@@ -43,12 +50,21 @@ class SupportScreen( val onRefresh: () -> Unit = {}) : Screen {
             }
         }
 
-        AppScaffold(events = screenModel.events) {
+        val events = remember(screenModel.events, plansModel.events) {
+            merge(screenModel.events, plansModel.events)
+        }
+
+        AppScaffold(events = events) {
 
             when (planState) {
 
                 is UiState.Loading -> {
-                    // Optional loader
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
 
                 is UiState.Success -> {
@@ -80,7 +96,11 @@ class SupportScreen( val onRefresh: () -> Unit = {}) : Screen {
                 }
 
                 is UiState.Error -> {
-                    Text("Failed to load plans")
+                    val message = (planState as UiState.Error).message
+                    FullScreenError(
+                        message = message.ifBlank { "Failed to load plans" },
+                        onRetry = { plansModel.loadPlans() }
+                    )
                 }
 
                 else -> Unit

@@ -1,5 +1,7 @@
 package com.hybrid.internet.presentation.features.plans
 
+import com.hybrid.internet.presentation.features.dashboard.RegisterTabRefresh
+import com.hybrid.internet.presentation.features.dashboard.PlansTab
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -18,6 +20,7 @@ class CustomerPlansScreen : Screen {
     @Composable
     override fun Content() {
         val screenModel = getScreenModel<CustomerPlansScreenModel>()
+        RegisterTabRefresh(PlansTab.key, screenModel) { screenModel.loadPlans() }
         val uiState by screenModel.state.collectAsState()
         val isProcessing by screenModel.isProcessing.collectAsState()
 

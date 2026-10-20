@@ -1,6 +1,7 @@
 package com.hybrid.internet.presentation.features.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,7 +26,11 @@ import androidx.compose.ui.unit.dp
 import com.hybrid.internet.data.model.response.Ticket
 
 @Composable
-fun DashboardTicketItem(ticket: Ticket, isDark: Boolean) {
+fun DashboardTicketItem(
+    ticket: Ticket,
+    isDark: Boolean,
+    onClick: () -> Unit
+) {
     val mainText = if (isDark) Color.White else Color(0xFF1A1A1A)
     val cardBg = if (isDark) Color(0xFF252525) else Color.White
 
@@ -33,6 +38,10 @@ fun DashboardTicketItem(ticket: Ticket, isDark: Boolean) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
+            .clickable(
+                enabled = !ticket.status.orEmpty().trim().equals("Resolved", ignoreCase = true),
+                onClick = onClick
+            )
             .background(cardBg, RoundedCornerShape(16.dp))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically

@@ -23,6 +23,8 @@ class SupportScreenModel(
     val state: StateFlow<UiState<SupportTicketResponse>> = _state
 
     fun submitReport(req: SupportRequest) {
+        if (_state.value is UiState.Loading) return
+
         screenModelScope.launch {
             _state.value = UiState.Loading
 

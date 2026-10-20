@@ -1,5 +1,7 @@
 package com.hybrid.internet.presentation.features.ticket
 
+import com.hybrid.internet.presentation.features.dashboard.RegisterTabRefresh
+import com.hybrid.internet.presentation.features.dashboard.TicketsTab
 import com.hybrid.internet.presentation.features.support.SupportScreen
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -38,7 +40,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.hybrid.internet.core.state.UiState
-import com.hybrid.internet.presentation.features.ticketHistory.TicketHistoryScreen
+import com.hybrid.internet.presentation.features.ticketMessages.TicketMessagesScreen
 import com.hybrid.internet.presentation.theme.CreamBackground
 import com.hybrid.internet.presentation.theme.DarkBackground
 import com.hybrid.internet.presentation.theme.GreenPrimary
@@ -52,12 +54,32 @@ class TicketHistoryList : Screen {
 
         val isDark = isSystemInDarkTheme()
         val screenModel = getScreenModel<TicketScreenModel>()
+        RegisterTabRefresh(TicketsTab.key, screenModel) { screenModel.refresh() }
         val state by screenModel.state.collectAsState()
 
         val navigator = LocalNavigator.currentOrThrow
         val rootNavigator = navigator.parent ?: navigator
 
+        val snackbarHostState = remember { SnackbarHostState() }
+        val confirmationMessage = screenModel.confirmationMessage
+        LaunchedEffect(confirmationMessage) {
+            confirmationMessage?.let {
+                snackbarHostState.showSnackbar(it)
+                screenModel.clearConfirmationMessage()
+            }
+        }
+        screenModel.confirmationTicket?.let { ticket ->
+            TicketConfirmationSheet(
+                ticket = ticket,
+                submitting = screenModel.isConfirming,
+                error = screenModel.confirmationError,
+                onDismiss = screenModel::dismissConfirmation,
+                onSubmit = screenModel::confirmTicket
+            )
+        }
+
         Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             floatingActionButton = {
                 ExtendedFloatingActionButton(
                     onClick = {
@@ -112,16 +134,20 @@ class TicketHistoryList : Screen {
 
                     is UiState.Success -> {
                         LazyColumn(
-                            contentPadding = PaddingValues(12.dp)
+                            contentPadding = PaddingValues(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 96.dp)
                         ) {
 
                             items(current.data) { ticket ->
                                 TicketHistoryContent(
                                     item = ticket,
                                     isDark = isDark,
-                                    onTicketClick = { id ->
+                                    onConfirmResolution = { screenModel.openConfirmation(ticket) },
+                                    onTicketClick = { ticketId ->
                                         rootNavigator.push(
-                                            TicketHistoryScreen(id)
+                                            TicketMessagesScreen(
+                                                ticketId = ticketId,
+                                                displayTicketId = ticket.ticketId ?: ticketId
+                                            )
                                         )
                                     }
                                 )

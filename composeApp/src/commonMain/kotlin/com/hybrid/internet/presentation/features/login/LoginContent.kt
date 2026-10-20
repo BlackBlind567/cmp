@@ -79,12 +79,20 @@ fun LoginContent(
             LoginMode.EMAIL -> {
                 AppTextField(
                     value = email,
-                    onChange = {
-                        email = it
+                    onChange = { input ->
+
+                        if (input.all { it.isDigit() }) {
+                            if (input.length <= 10) {
+                                email = input
+                            }
+                        } else {
+                            email = input
+                        }
+
                         emailError = null
                     },
                     label = "Email",
-                    inputType = InputType.EMAIL,
+                    inputType = InputType.TEXT,
                     error = emailError
                 )
 
@@ -120,7 +128,7 @@ fun LoginContent(
                     loading = state is UiState.Loading,
                     enabled = email.isNotBlank() && password.isNotBlank()
                 ) {
-                    emailError = Validator.email(email)
+                    emailError = Validator.emailOrMobile(email)
                     passwordError = Validator.password(password)
 
                     if (emailError == null && passwordError == null) {

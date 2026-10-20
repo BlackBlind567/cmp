@@ -11,6 +11,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.hybrid.internet.core.state.UiState
@@ -31,7 +33,12 @@ fun OtpVerifyContent(
     var otp by remember { mutableStateOf("") }
     var timeLeft by remember { mutableStateOf(120) }
     val state by viewModel.state.collectAsState()
-    // Send OTP on screen open
+
+    // ✅ Keyboard controller
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    // Send OTP on screen open (keyboard will NOT open now)
     LaunchedEffect(Unit) {
         onSendOtp()
     }
@@ -46,10 +53,9 @@ fun OtpVerifyContent(
 
     ScreenContainer {
 
+
         /* ---------- HEADER ---------- */
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -58,10 +64,7 @@ fun OtpVerifyContent(
                     .clickable { onBack() },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Back"
-                )
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
             }
         }
 
@@ -90,7 +93,8 @@ fun OtpVerifyContent(
             OtpInput(
                 otp = otp,
                 onOtpChange = { if (it.length <= 6) otp = it },
-                modifier = Modifier.fillMaxWidth(0.85f) // 🔑 responsive width
+                modifier = Modifier.fillMaxWidth(0.85f)
+                // ❌ Do NOT request focus here
             )
         }
 
@@ -128,15 +132,14 @@ fun OtpVerifyContent(
             text = "Verify OTP",
             enabled = otp.length == 6
         ) {
-            onVerify(otp)
-        }
+            // ✅ Hide keyboard on verify click
+            keyboardController?.hide()
+            focusManager.clearFocus()
 
-        if (state is UiState.Success) {
-           onOtpVerifySuccess()
+            onVerify(otp)
         }
     }
 }
-
 private fun formatTime(seconds: Int): String {
     val minutes = seconds / 60
     val secs = seconds % 60

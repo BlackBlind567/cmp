@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "335655199534",
+    "project_id": "hybrid-internet",
+    "storage_bucket": "hybrid-internet.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:335655199534:android:7c91f076eebbd1844f50bf",
+        "android_client_info": {
+          "package_name": "com.hybrid.internet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLvyVO2rhUlLX0oGIM87wFlrHgJMHDT_c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

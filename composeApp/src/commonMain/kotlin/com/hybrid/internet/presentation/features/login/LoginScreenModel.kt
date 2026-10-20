@@ -46,7 +46,7 @@ class LoginScreenModel(
                 is NetworkResult.Failure -> {
                     sessionManager.handle(result.error)
                     _state.value = Error(result.error.message)
-
+                    println("LoginScreenModel login error ==> ${result.error.message}")
                     sendEvent(
                         ShowSnackBar(
                             message = result.error.message,

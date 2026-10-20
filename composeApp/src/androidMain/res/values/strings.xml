@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Hybrid Internet</string>
+    <string name="default_notification_channel_id">hybrid_internet_alerts_v2</string>
+    <string name="default_notification_channel_name">Hybrid Internet alerts</string>
 </resources>

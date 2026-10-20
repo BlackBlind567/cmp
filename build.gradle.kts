@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.kotlinCocoapods) apply false
+    alias(libs.plugins.googleServices) apply false
 
 }
-
 

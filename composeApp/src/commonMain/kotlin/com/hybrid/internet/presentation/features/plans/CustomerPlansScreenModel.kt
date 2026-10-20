@@ -24,31 +24,29 @@ class CustomerPlansScreenModel(
     private val _isProcessing = MutableStateFlow(false)
     val isProcessing: StateFlow<Boolean> = _isProcessing.asStateFlow()
 
-    init {
-        loadPlans()
-    }
+    private var loading = false
+
+    init { loadPlans() }
 
     fun loadPlans() {
+        if (loading) return
+        loading = true
         screenModelScope.launch {
-            _state.value = UiState.Loading
             try {
-                // No pagination, just calling the API
+                if (_state.value !is UiState.Success) _state.value = UiState.Loading
                 when (val result = repo.getCustomerPlan()) {
-                    is NetworkResult.Success -> {
-                        _state.value = UiState.Success(result.data)
-                    }
+                    is NetworkResult.Success -> _state.value = UiState.Success(result.data)
                     is NetworkResult.Failure -> {
-                        _state.value = UiState.Error(result.error.message)
-                        sendEvent(
-                            UiEvent.ShowSnackBar(
-                                message = result.error.message,
-                                isError = true
-                            )
-                        )
+                        if (_state.value !is UiState.Success) _state.value = UiState.Error(result.error.message)
+                        sendEvent(UiEvent.ShowSnackBar(result.error.message))
                     }
                 }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
             } catch (e: Exception) {
-                _state.value = UiState.Error(e.message ?: "Unknown Connection Error")
+                if (_state.value !is UiState.Success) _state.value = UiState.Error(e.message ?: "Unable to load plans")
+            } finally {
+                loading = false
             }
         }
     }

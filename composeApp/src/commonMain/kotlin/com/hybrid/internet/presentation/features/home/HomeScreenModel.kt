@@ -22,38 +22,31 @@ class HomeScreenModel (
         MutableStateFlow<UiState<HomeResponse>>(UiState.Loading)
     val state: StateFlow<UiState<HomeResponse>> = _state
 
-    init {
-        println("HomeScreenModel init")
-        loadDashboard()
-    }
+    private var loading = false
+
+    init { loadDashboard() }
 
     fun loadDashboard() {
-        println("HomeScreenModel loadDashboard")
+        if (loading) return
+        loading = true
         screenModelScope.launch {
             try {
-            when (val result = repo.getDashboard()) {
-
-                is NetworkResult.Success -> {
-                    _state.value =
-                        UiState.Success(result.data)
+                _userData.value = localStorage.getUser()
+                if (_state.value !is UiState.Success) _state.value = UiState.Loading
+                when (val result = repo.getDashboard()) {
+                    is NetworkResult.Success -> _state.value = UiState.Success(result.data)
+                    is NetworkResult.Failure -> {
+                        if (_state.value !is UiState.Success) _state.value = UiState.Error(result.error.message)
+                        sendEvent(ShowSnackBar(result.error.message))
+                    }
                 }
-
-                is NetworkResult.Failure -> {
-                    _state.value = UiState.Error(result.error.message)
-                    sendEvent(
-                        ShowSnackBar(
-                            message = result.error.message,
-                            isError = true
-                        )
-                    )
-                }
-
-                else -> {}
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (_state.value !is UiState.Success) _state.value = UiState.Error(e.message ?: "Unable to load dashboard")
+            } finally {
+                loading = false
             }
-        } catch (e: Exception) {
-            println("Dashboard API Crash: ${e.message}") // Look for this in logs!
-            _state.value = UiState.Error(e.message ?: "Unknown Connection Error")
-        }
         }
     }
 }

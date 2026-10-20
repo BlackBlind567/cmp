@@ -16,6 +16,14 @@ class LocalStorage {
         return settings.getStringOrNull("token")
     }
 
+    fun savePushToken(token: String) {
+        settings.putString("push_token", token)
+    }
+
+    fun getPushToken(): String? {
+        return settings.getStringOrNull("push_token")
+    }
+
     fun saveUser(user: LoginResponse) {
         settings.putString("user", Json.encodeToString(user))
     }

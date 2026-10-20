@@ -9,6 +9,10 @@ plugins {
     alias(libs.plugins.kotlinCocoapods)
 
 }
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 version = "1.0.0"
 kotlin {
     androidTarget {
@@ -37,12 +41,17 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
+            implementation(libs.androidx.core.ktx)
             implementation(libs.androidx.activity.compose)
             // Ktor Android engine
             implementation(libs.ktor.client.android)
             // ✅ Material Icons (FIX)
             implementation(libs.compose.material.icons.core)
             implementation(libs.compose.material.icons.extended)
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.messaging)
+            implementation(libs.play.app.update)
+            implementation(libs.play.app.update.ktx)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -52,7 +61,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             //implementation(libs.androidx.lifecycle.viewmodelCompose)
-           // implementation(libs.androidx.lifecycle.runtimeCompose)
+            // implementation(libs.androidx.lifecycle.runtimeCompose)
 
             // ---------- Compose ----------
             implementation(compose.runtime)
@@ -84,12 +93,11 @@ kotlin {
             // ---------- DI ----------
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
-           // implementation(libs.koin.compose.mp)
+            // implementation(libs.koin.compose.mp)
 
             // Local Storage
 //            implementation("com.russhwolf:multiplatform-settings:1.3.0")
             implementation("com.russhwolf:multiplatform-settings-no-arg:1.3.0")
-
 
 
         }
@@ -106,12 +114,16 @@ android {
     namespace = "com.hybrid.internet"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.hybrid.internet"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 4
-        versionName = "1.4"
+        versionCode = 9
+        versionName = "1.9"
     }
     packaging {
         resources {
@@ -136,8 +148,7 @@ dependencies {
 /* 🔥 THIS BLOCK IS THE KEY 🔥 */
 compose.resources {
     publicResClass = true
-  //  packageOfResClass  = "com.business.cmpproject.composeapp.generated"
-    packageOfResClass  = "com.hybrid.internet.composeapp.generated.resources"
+    //  packageOfResClass  = "com.business.cmpproject.composeapp.generated"
+    packageOfResClass = "com.hybrid.internet.composeapp.generated.resources"
     generateResClass = auto
 }
-

@@ -8,14 +8,20 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 suspend inline fun <reified T> blindApiCall(
     sessionManager: SessionManager,
     crossinline apiCall: suspend () -> HttpResponse
 ): NetworkResult<T> {
 
-    return withContext(Dispatchers.Default) {
+    return withContext(Dispatchers.IO) {
         try {
 
             retry {
@@ -33,13 +39,49 @@ suspend inline fun <reified T> blindApiCall(
                             NetworkResult.Success(body.data)
                         else
                             NetworkResult.Failure(
-                                HttpError.Unknown(body.message)
+                                HttpError.Unknown(body.message!!)
                             )
                     }
 
                     HttpStatusCode.BadRequest -> {
-                        val body = response.body<ApiResponse<T>>()
-                        NetworkResult.Failure(HttpError.Unknown(body.message))
+
+                        val raw = response.body<String>()
+
+                        val json = Json { ignoreUnknownKeys = true }
+
+                        val root = json.parseToJsonElement(raw).jsonObject
+
+                        val dataObject = root["data"]?.jsonObject
+
+                        // ✅ Try to read "error" field first (new API format)
+                        val directError = dataObject
+                            ?.get("error")
+                            ?.jsonPrimitive
+                            ?.contentOrNull
+
+                        // ✅ Try old validation format (array of errors)
+                        val firstValidationError = dataObject
+                            ?.values
+                            ?.firstOrNull()
+                            ?.let { element ->
+                                when {
+                                    element is kotlinx.serialization.json.JsonArray ->
+                                        element.firstOrNull()?.jsonPrimitive?.contentOrNull
+                                    element is kotlinx.serialization.json.JsonPrimitive ->
+                                        element.contentOrNull
+                                    else -> null
+                                }
+                            }
+
+                        val message =
+                            directError
+                                ?: firstValidationError
+                                ?: root["message"]?.jsonPrimitive?.contentOrNull
+                                ?: "Validation error"
+
+                        println("API BadRequest ==> $message")
+
+                        NetworkResult.Failure(HttpError.Unknown(message))
                     }
 
 

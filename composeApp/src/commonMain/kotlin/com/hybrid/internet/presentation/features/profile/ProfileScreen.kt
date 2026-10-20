@@ -1,5 +1,7 @@
 package com.hybrid.internet.presentation.features.profile
 
+import com.hybrid.internet.presentation.features.dashboard.RegisterTabRefresh
+import com.hybrid.internet.presentation.features.dashboard.ProfileTab
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -54,6 +56,7 @@ class ProfileScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val rootNavigator = navigator.parent ?: navigator
         val screenModel = getScreenModel<ProfileScreenModel>()
+        RegisterTabRefresh(ProfileTab.key, screenModel) { screenModel.refreshUser() }
 
         val user by screenModel.userData.collectAsState()
         val state by screenModel.state.collectAsState()

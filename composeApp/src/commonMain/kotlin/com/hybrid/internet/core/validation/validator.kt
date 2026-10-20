@@ -18,6 +18,24 @@ object Validator {
             else -> null
         }
 
+    fun emailOrMobile(value: String): String? {
+
+        if (value.isBlank()) return "Field required"
+
+        // ✅ CMP safe email regex
+        val emailRegex = Regex(
+            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
+        )
+
+        val isEmail = emailRegex.matches(value)
+
+        val isMobile = value.length == 10 && value.all { it.isDigit() }
+
+        return if (!isEmail && !isMobile) {
+            "Enter valid email or mobile number"
+        } else null
+    }
+
     fun password(value: String): String? =
         if (value.length < 6)
             "Password must be at least 6 characters"

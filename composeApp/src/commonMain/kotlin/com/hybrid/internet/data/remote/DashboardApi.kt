@@ -9,9 +9,18 @@ class DashboardApi(
     private val client: HttpClient
 ) {
 
-    suspend fun fetchDashboard(): HttpResponse {
+    suspend fun fetchDashboard(
+        deviceId: String?,
+        platform: String
+    ): HttpResponse {
         return client.post("/api/customer-dashboard-api") {
             contentType(ContentType.Application.Json)
+            setBody(
+                mapOf(
+                    "device_id" to deviceId.orEmpty(),
+                    "platform" to platform
+                )
+            )
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.hybrid.internet.presentation.features.serviceRequest.list
 
+import com.hybrid.internet.presentation.features.dashboard.RegisterTabRefresh
+import com.hybrid.internet.presentation.features.dashboard.ServicesTab
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -16,6 +18,7 @@ class ServiceRequestScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val screenModel = getScreenModel<ServiceRequestScreenModel>()
+        RegisterTabRefresh(ServicesTab.key, screenModel) { screenModel.loadRequests() }
         val uiState by screenModel.state.collectAsState()
         val isDark = isSystemInDarkTheme()
         val rootNavigator = navigator.parent ?: navigator

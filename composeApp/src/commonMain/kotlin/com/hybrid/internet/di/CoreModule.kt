@@ -41,6 +41,7 @@ import com.hybrid.internet.presentation.features.splash.SplashScreenModel
 import com.hybrid.internet.presentation.features.statusTracking.PlanTrackingScreenModel
 import com.hybrid.internet.presentation.features.support.SupportScreenModel
 import com.hybrid.internet.presentation.features.ticket.TicketScreenModel
+import com.hybrid.internet.presentation.features.ticketMessages.TicketMessagesScreenModel
 import com.hybrid.internet.presentation.features.ticketHistory.TicketHistoryScreenModel
 import org.koin.dsl.module
 
@@ -72,7 +73,7 @@ val coreModule = module {
 
     // ---- Repository ----
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
-    single<DashboardRepository> { DashboardRepositoryImpl(get(), get()) }
+    single<DashboardRepository> { DashboardRepositoryImpl(get(), get(), get()) }
     single<TicketDetailsRepository> { TicketDetailsRepositoryImpl(get(), get()) }
     single<TicketRepository> { TicketRepositoryImpl(get(), get()) }
     single<PlanRepository> { PlanRepositoryImpl(get(), get()) }
@@ -98,7 +99,8 @@ val coreModule = module {
         )
     }
     factory { LoginScreenModel(get(), get(), get()) }
-    factory { (ticketId: Int) -> TicketHistoryScreenModel(get(), ticketId) }
+    factory { (ticketId: String) -> TicketHistoryScreenModel(get(), ticketId) }
+    factory { (ticketId: String) -> TicketMessagesScreenModel(get(), ticketId) }
     factory { OtpScreenModel(get(), get(),) }
     factory { TicketScreenModel(get(), get(),) }
     factory { SupportScreenModel(get(),get()) }
